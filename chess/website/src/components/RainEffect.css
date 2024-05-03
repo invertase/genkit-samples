@@ -1,0 +1,28 @@
+.rain-wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.chess-piece {
+  position: absolute;
+  top: -50px; /* Start above the screen */
+  animation: fall linear infinite;
+  animation-duration: 10s;
+}
+
+@keyframes fall {
+  0% {
+    opacity: 0%;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 50%;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0%;
+    transform: translateY(100vh);
+  }
+}
