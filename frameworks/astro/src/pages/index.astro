@@ -1,0 +1,58 @@
+---
+
+import { generate } from '@genkit-ai/ai';
+import { initializeGenkit } from '@genkit-ai/core';
+import { defineFlow, runFlow } from '@genkit-ai/flow';
+import { geminiPro } from '@genkit-ai/googleai';
+import * as z from 'zod';
+import config from '../genkit.config.js';
+import Chat from '@components/chat'
+
+initializeGenkit(config);
+
+const jokeFlow = defineFlow(
+  {
+    name: 'jokeFlow',
+    inputSchema: z.string(),
+    outputSchema: z.string(),
+  },
+  async (subject: string) => {
+
+    const llmResponse = await generate({
+      prompt: `Tell me a long joke about ${subject}`,
+      model: geminiPro,
+      config: {
+        temperature: 1,
+      },
+    });
+
+    return llmResponse.text();
+  }
+);
+
+const url  = new URL(Astro.request.url);
+const joke  = url.searchParams.get('joke');
+let response = "n/a";
+
+if(joke){
+  response = await runFlow(jokeFlow,joke);
+}
+
+
+
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body>
+		<h1 class="">
+      {response}
+		</h1>
+	</body>
+</html>
