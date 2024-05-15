@@ -8,8 +8,8 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <RainEffect />
 
-      <div className="flex w-[100vw] h-[100vh] justify-center items-center absolute ">
-        <div className="fixed w-[30vw] max-h-[50vh]">
+      <div className="flex w-screen h-screen justify-center items-center md:items-start">
+        <div className=" m-4 md:m-24 relative max-w-full max-h-full w-[90vw] md:w-[40vw] md:h-[40vh]">
           <Board />
         </div>
       </div>

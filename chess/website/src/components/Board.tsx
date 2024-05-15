@@ -20,6 +20,8 @@ export default function Board() {
 
   const { mutate, data, error } = useMakeChessMove();
 
+  const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
+
   useEffect(() => {
     mutate("reset");
   }, []);
@@ -34,6 +36,10 @@ export default function Board() {
         promotion: "q",
       });
 
+      if (!move) {
+        throw new Error("Invalid move");
+      }
+
       const san = move.san;
       setFen(generateFen(fen, san));
 
@@ -43,6 +49,19 @@ export default function Board() {
       console.warn("Invalid move!", error);
       alert("Invalid move!");
       return false;
+    }
+  }
+
+  function handleSquareClick(square: Square) {
+    if (!selectedSquare) {
+      setSelectedSquare(square);
+    } else {
+      const moveSuccess = onDrop(selectedSquare, square);
+      if (moveSuccess) {
+        setSelectedSquare(null);
+      } else {
+        setSelectedSquare(square);
+      }
     }
   }
 
@@ -71,7 +90,11 @@ export default function Board() {
 
   return (
     <div className="flex flex-col items-center p-4 bg-white rounded-lg shadow">
-      <Chessboard position={fen} onPieceDrop={onDrop} />
+      <Chessboard
+        position={fen}
+        onPieceDrop={onDrop}
+        onSquareClick={handleSquareClick}
+      />
       <div className="mt-4 p-2 text-center font-bold">{latestMessage}</div>
       {reasoning && (
         <div className="mt-4 p-2 text-center font-bold">Reasoning:</div>
