@@ -12,6 +12,10 @@ const generateFen = (oldFen: string, move: string) => {
 export default function Board() {
   const [fen, setFen] = useState<string>("start");
 
+  const [gameId, setGameId] = useState<string | undefined>(
+    "" as string | undefined
+  );
+
   const [latestMessage, setLatestMessage] = useState<string>(
     "Hello! I am Gemini and I play chess. Make your move if you dare!"
   );
@@ -20,8 +24,10 @@ export default function Board() {
 
   const { mutate, data, error } = useMakeChessMove();
 
+  const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
+
   useEffect(() => {
-    mutate("reset");
+    mutate({ move: "reset", gameId });
   }, []);
 
   function onDrop(sourceSquare: Square, targetSquare: Square) {
@@ -34,15 +40,32 @@ export default function Board() {
         promotion: "q",
       });
 
+      if (!move) {
+        throw new Error("Invalid move");
+      }
+
       const san = move.san;
       setFen(generateFen(fen, san));
 
-      mutate(san);
+      mutate({ move: san, gameId });
       return true;
     } catch (error) {
       console.warn("Invalid move!", error);
       alert("Invalid move!");
       return false;
+    }
+  }
+
+  function handleSquareClick(square: Square) {
+    if (!selectedSquare) {
+      setSelectedSquare(square);
+    } else {
+      const moveSuccess = onDrop(selectedSquare, square);
+      if (moveSuccess) {
+        setSelectedSquare(null);
+      } else {
+        setSelectedSquare(square);
+      }
     }
   }
 
@@ -52,6 +75,7 @@ export default function Board() {
     }
     if (data) {
       console.log(data);
+      setGameId(data.gameId);
       setFen(data.position);
       if (fen !== "start") {
         setLatestMessage(data.smarmyComment);
@@ -71,7 +95,11 @@ export default function Board() {
 
   return (
     <div className="flex flex-col items-center p-4 bg-white rounded-lg shadow">
-      <Chessboard position={fen} onPieceDrop={onDrop} />
+      <Chessboard
+        position={fen}
+        onPieceDrop={onDrop}
+        onSquareClick={handleSquareClick}
+      />
       <div className="mt-4 p-2 text-center font-bold">{latestMessage}</div>
       {reasoning && (
         <div className="mt-4 p-2 text-center font-bold">Reasoning:</div>

@@ -28,7 +28,7 @@ describe("chessStepFunction", () => {
   });
 
   test('should reset the game when move is "reset"', async () => {
-    const response = await chessStepsFunction("reset");
+    const response = await chessStepsFunction({ move: "reset" });
     expect(response).toEqual({
       moveInPGNNotation: "",
       reasoning: "Game reset",
@@ -49,7 +49,7 @@ describe("chessStepFunction", () => {
       }),
     });
 
-    const response = await chessStepsFunction("e2");
+    const response = await chessStepsFunction({ move: "e2" });
 
     expect(simpleGenerateWithRetry).toHaveBeenCalled();
     expect(response).toEqual({
@@ -69,7 +69,7 @@ describe("chessStepFunction", () => {
       output: jest.fn().mockReturnValue(null),
     });
 
-    await expect(chessStepsFunction("e2")).rejects.toThrow(
+    await expect(chessStepsFunction({ move: "e2" })).rejects.toThrow(
       "No output from LLM"
     );
   });
