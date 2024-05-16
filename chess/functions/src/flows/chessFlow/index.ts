@@ -3,7 +3,9 @@ import { Chess } from "chess.js";
 import { simpleGenerateWithRetry } from "../../utils/retry";
 import { chessPrompt } from "./prompt";
 import { generateOutputSchema, inputSchema, outputSchema } from "./schema";
-import { defineFlow, StepsFunction } from "@genkit-ai/flow";
+import * as admin from "firebase-admin";
+import { noAuth, onFlow } from "@genkit-ai/firebase/functions";
+
 import {
   gameOverResponse,
   resetGame,
@@ -11,26 +13,44 @@ import {
 } from "./utils";
 import { geminiPro } from "@genkit-ai/vertexai";
 
-// TODO: handle history in a more persistent way (undecided)
-export let gameHistory: string[] = [];
+// Initialize Firebase Admin SDK
+admin.initializeApp();
+
+const db = admin.firestore();
+const chessGamesCollection = db.collection("chessGames");
 
 type StepFunctionInput = z.infer<typeof inputSchema>;
 type StepFunctionOutput = z.infer<typeof outputSchema>;
 
+export let gameHistory: string[] = [];
+
 // Main chess step function, asynchronously handles a move
-export const chessStepsFunction = async (
-  move: StepFunctionInput
-): Promise<StepFunctionOutput> => {
+export const chessStepsFunction = async ({
+  move,
+  gameId,
+}: StepFunctionInput): Promise<StepFunctionOutput> => {
   const game = new Chess();
+  let gameDoc;
+
+  // If gameId is undefined, create a new document
+  if (!gameId) {
+    gameDoc = chessGamesCollection.doc();
+    gameId = gameDoc.id;
+  } else {
+    gameDoc = chessGamesCollection.doc(gameId);
+  }
 
   if (move === "reset") {
     console.log("Resetting game");
     gameHistory = [];
-    return resetGame(game, gameHistory);
+    await gameDoc.delete();
+    return resetGame(game, gameHistory, gameId);
   }
 
-  if (game.isGameOver()) {
-    return gameOverResponse(game, gameHistory);
+  // Fetch the current game state from Firestore
+  const gameDocSnapshot = await gameDoc.get();
+  if (gameDocSnapshot.exists) {
+    gameHistory = gameDocSnapshot.data()?.moves || [];
   }
 
   // Replay the game history to the current state
@@ -41,6 +61,14 @@ export const chessStepsFunction = async (
   // Make the move
   game.move(move);
   gameHistory.push(move);
+
+  // Save the current game state to Firestore
+  await gameDoc.set({ moves: gameHistory });
+
+  if (game.isGameOver()) {
+    await gameDoc.delete();
+    return gameOverResponse(game, gameHistory, gameId);
+  }
 
   // Generate the next move using the AI
   const llmResponse = await simpleGenerateWithRetry({
@@ -70,6 +98,9 @@ export const chessStepsFunction = async (
   game.move(moveInPGNNotation);
   gameHistory.push(moveInPGNNotation);
 
+  // Save the updated game state to Firestore
+  await gameDoc.set({ moves: gameHistory });
+
   return {
     moveInPGNNotation,
     reasoning,
@@ -77,14 +108,16 @@ export const chessStepsFunction = async (
     availableMoves: game.moves(),
     gameHistory,
     position: game.fen(),
+    gameId, // Return gameId to the client
   };
 };
 
-export const chessFlow = defineFlow(
+export const chessFlow = onFlow(
   {
     name: "chessFlow",
     inputSchema,
     outputSchema,
+    authPolicy: noAuth(),
   },
   chessStepsFunction
 );

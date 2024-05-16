@@ -1,6 +1,9 @@
-import { z } from "zod";
+import z from "zod";
 
-export const inputSchema = z.string();
+export const inputSchema = z.object({
+  move: z.string(),
+  gameId: z.string().optional(),
+});
 
 export const generateOutputSchema = z.object({
   moveInPGNNotation: z.string(),
@@ -15,4 +18,5 @@ export const outputSchema = z.object({
   availableMoves: z.array(z.string()),
   gameHistory: z.array(z.string()),
   position: z.string(),
+  gameId: z.string(),
 });

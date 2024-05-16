@@ -12,6 +12,10 @@ const generateFen = (oldFen: string, move: string) => {
 export default function Board() {
   const [fen, setFen] = useState<string>("start");
 
+  const [gameId, setGameId] = useState<string | undefined>(
+    "" as string | undefined
+  );
+
   const [latestMessage, setLatestMessage] = useState<string>(
     "Hello! I am Gemini and I play chess. Make your move if you dare!"
   );
@@ -23,7 +27,7 @@ export default function Board() {
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
 
   useEffect(() => {
-    mutate("reset");
+    mutate({ move: "reset", gameId });
   }, []);
 
   function onDrop(sourceSquare: Square, targetSquare: Square) {
@@ -43,7 +47,7 @@ export default function Board() {
       const san = move.san;
       setFen(generateFen(fen, san));
 
-      mutate(san);
+      mutate({ move: san, gameId });
       return true;
     } catch (error) {
       console.warn("Invalid move!", error);
@@ -71,6 +75,7 @@ export default function Board() {
     }
     if (data) {
       console.log(data);
+      setGameId(data.gameId);
       setFen(data.position);
       if (fen !== "start") {
         setLatestMessage(data.smarmyComment);

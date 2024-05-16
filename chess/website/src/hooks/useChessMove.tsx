@@ -1,21 +1,26 @@
 import { useMutation } from "@tanstack/react-query";
 
-const HOST = "http://localhost:3400";
-
 interface MoveResult {
   position: string;
   smarmyComment: string;
   reasoning: string;
+  gameId: string;
 }
 
-const postEngineMove = async (move: string): Promise<MoveResult> => {
+const postEngineMove = async ({
+  move,
+  gameId,
+}: {
+  move: string;
+  gameId: string | undefined;
+}): Promise<MoveResult> => {
   try {
-    const response = await fetch(`${HOST}/chessFlow`, {
+    const response = await fetch(`api/chessFlow`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ data: move }),
+      body: JSON.stringify({ data: { move, gameId } }),
     });
 
     if (!response.ok) {
@@ -30,7 +35,7 @@ const postEngineMove = async (move: string): Promise<MoveResult> => {
 };
 
 export const useMakeChessMove = () =>
-  useMutation<MoveResult, Error, string>({
+  useMutation<MoveResult, Error, { move: string; gameId: string | undefined }>({
     mutationFn: postEngineMove,
     onSuccess: (data) => {
       console.log("Move successful:", data);

@@ -5,7 +5,11 @@ import { z } from "zod";
 import { gameHistory } from ".";
 
 // Function to reset the game state
-export const resetGame = (game: Chess, gameHistory: string[]) => {
+export const resetGame = (
+  game: Chess,
+  gameHistory: string[],
+  gameId: string
+) => {
   game.reset();
   return {
     moveInPGNNotation: "",
@@ -14,17 +18,23 @@ export const resetGame = (game: Chess, gameHistory: string[]) => {
     availableMoves: game.moves(),
     gameHistory: [],
     position: game.fen(),
+    gameId,
   };
 };
 
 // Function to handle game over state
-export const gameOverResponse = (game: Chess, gameHistory: string[]) => ({
+export const gameOverResponse = (
+  game: Chess,
+  gameHistory: string[],
+  gameId: string
+) => ({
   moveInPGNNotation: game.pgn(),
   reasoning: "Game is over",
   smarmyComment: "",
   availableMoves: [],
   gameHistory,
   position: game.fen(),
+  gameId,
 });
 
 // Helper function to validate moves using game history
