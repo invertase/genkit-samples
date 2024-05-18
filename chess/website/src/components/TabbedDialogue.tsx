@@ -39,23 +39,23 @@ const TabbedDialogue = ({
       <div className="tab-content">
         {activeTab === "latestMessage" && (
           <div className="latest-message">
-            <span className="">Gemini: </span>
+            <span className="text-xs">Gemini: </span>
             <ReactTyped
               strings={[latestMessage]}
               typeSpeed={5}
               cursorChar=""
-              className="text-blue-600"
+              className="text-blue-600 text-xs"
             />
           </div>
         )}
         {activeTab === "reasoning" && (
           <div className="reasoning">
-            <span className="">Gemini: </span>
+            <span className="text-xs">Gemini: </span>
             <ReactTyped
               strings={[`"${reasoning}"`]}
               typeSpeed={5}
               cursorChar=""
-              className="text-blue-600 italic"
+              className="text-blue-600 italic text-xs leading-snug"
             />
           </div>
         )}

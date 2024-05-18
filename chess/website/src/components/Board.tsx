@@ -62,7 +62,6 @@ export default function Board() {
       return true;
     } catch (error) {
       console.warn("Invalid move!", error);
-      alert("Invalid move!");
       return false;
     }
   }
@@ -132,7 +131,7 @@ export default function Board() {
                     />
                   </svg>
                 </div>
-                <div className="text-white lg:text-xl mt-2 font-bold opacity-80 animate-pulse">
+                <div className="text-white lg:text-xl mt-2 font-bold opacity-80 animate-pulse w-full text-center">
                   Gemini is thinking...
                 </div>
               </div>
