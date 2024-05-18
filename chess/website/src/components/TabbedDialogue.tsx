@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ReactTyped } from "react-typed";
 
 const TabbedDialogue = ({
