@@ -1,3 +1,4 @@
+/* RainEffect.css */
 .rain-wrapper {
   position: relative;
   width: 100vw;
@@ -9,7 +10,8 @@
   position: absolute;
   top: -50px; /* Start above the screen */
   animation: fall linear infinite;
-  animation-duration: 10s;
+  animation-duration: var(--animation-duration);
+  animation-delay: var(--animation-delay);
 }
 
 @keyframes fall {
