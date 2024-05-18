@@ -13,16 +13,18 @@ const TabbedDialogue = ({
   return (
     <div>
       <div className="flex border-b mb-4">
-        <button
-          className={`py-2 px-4 text-sm font-semibold focus:outline-none ${
-            activeTab === "latestMessage"
-              ? "border-b-2 border-blue-500 text-blue-500"
-              : "text-gray-600"
-          }`}
-          onClick={() => setActiveTab("latestMessage")}
-        >
-          Latest Message
-        </button>
+        {latestMessage && (
+          <button
+            className={`py-2 px-4 text-sm font-semibold focus:outline-none ${
+              activeTab === "latestMessage"
+                ? "border-b-2 border-blue-500 text-blue-500"
+                : "text-gray-600"
+            }`}
+            onClick={() => setActiveTab("latestMessage")}
+          >
+            Latest Message
+          </button>
+        )}
         {reasoning && (
           <button
             className={`py-2 px-4 text-sm font-semibold focus:outline-none ${
@@ -36,7 +38,7 @@ const TabbedDialogue = ({
           </button>
         )}
       </div>
-      <div className="tab-content">
+      <div className="sm:max-h-none max-h-10 md:max-h-40 overflow-scroll">
         {activeTab === "latestMessage" && (
           <div className="latest-message">
             <span className="text-xs">Gemini: </span>
