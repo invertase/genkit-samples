@@ -3,11 +3,15 @@ import { Chess, Square } from "chess.js";
 import { Chessboard } from "react-chessboard";
 import { useMakeChessMove } from "../hooks/useChessMove";
 import TabbedDialogue from "./TabbedDialogue";
-
+import "./Board.css";
 const customBoardStyle: Record<string, string | number> = {
   borderRadius: "4px", // Rounded corners for a modern look
-
   boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // Soft shadow for depth
+};
+
+const customNotationStyle: Record<string, string> = {
+  fontSize: "12px", // Font size for notation
+  // color: "white", // Notation color
 };
 
 const customLightSquareStyle: Record<string, string> = {
@@ -114,6 +118,7 @@ export default function Board() {
             customBoardStyle={customBoardStyle}
             customLightSquareStyle={customLightSquareStyle}
             customDarkSquareStyle={customDarkSquareStyle}
+            customNotationStyle={customNotationStyle}
           />
           {isPending && (
             <>

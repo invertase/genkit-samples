@@ -1,0 +1,15 @@
+.chessboard [data-square]:not([data-piece]) > div {
+  position: absolute;
+  color: rgb(205, 127, 50);
+  font-size: 12px;
+}
+
+.chessboard [data-square]:not([data-piece]) > div:first-of-type {
+  left: -20px; /* Move row labels left */
+}
+
+.chessboard [data-square]:not([data-piece]) > div:last-of-type {
+  top: 100%; /* Move column labels down */
+  left: 50%;
+  transform: translateX(-50%);
+}
