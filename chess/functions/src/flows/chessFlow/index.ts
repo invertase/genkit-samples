@@ -9,6 +9,7 @@ export const chessFlow = onFlow(
     inputSchema,
     outputSchema,
     authPolicy,
+    enforceAppCheck: true,
   },
   chessStepsFunction
 );

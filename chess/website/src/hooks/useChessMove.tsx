@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { auth, app, appCheck } from "../firebase";
+import { auth, appCheck } from "../firebase";
 import { getToken } from "firebase/app-check";
 import { getIdToken } from "firebase/auth";
 
