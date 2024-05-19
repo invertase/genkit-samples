@@ -1,4 +1,4 @@
-import { chessStepsFunction } from ".";
+import { chessStepsFunction } from "./stepFunction";
 import { simpleGenerateWithRetry } from "../../utils/retry";
 
 jest.mock("../../utils/retry", () => ({
