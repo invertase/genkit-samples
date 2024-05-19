@@ -5,7 +5,6 @@ import {
 
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { activate } from "firebase/remote-config";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC_fKY0WdB5acokDCZa-WnU-0hcC8faIZI",
