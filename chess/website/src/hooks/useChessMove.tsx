@@ -5,6 +5,8 @@ interface MoveResult {
   smarmyComment: string;
   reasoning: string;
   gameId: string;
+  gameOver: boolean;
+  winner?: string;
 }
 
 const postEngineMove = async ({
@@ -37,9 +39,6 @@ const postEngineMove = async ({
 export const useMakeChessMove = () =>
   useMutation<MoveResult, Error, { move: string; gameId: string | undefined }>({
     mutationFn: postEngineMove,
-    onSuccess: (data) => {
-      console.log("Move successful:", data);
-    },
     onError: (error: Error) => {
       console.error("Error making move:", error.message);
     },

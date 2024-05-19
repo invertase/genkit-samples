@@ -19,4 +19,6 @@ export const outputSchema = z.object({
   gameHistory: z.array(z.string()),
   position: z.string(),
   gameId: z.string(),
+  gameOver: z.boolean(),
+  winnter: z.string().optional(),
 });

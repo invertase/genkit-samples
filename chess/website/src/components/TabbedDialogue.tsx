@@ -15,7 +15,7 @@ const TabbedDialogue = ({
       <div className="flex border-b mb-4">
         {latestMessage && (
           <button
-            className={`py-2 px-4 text-sm font-semibold focus:outline-none ${
+            className={`py-2 px-4 text-sm md:text-base font-semibold focus:outline-none ${
               activeTab === "latestMessage"
                 ? "border-b-2 border-blue-500 text-blue-500"
                 : "text-gray-600"
@@ -27,7 +27,7 @@ const TabbedDialogue = ({
         )}
         {reasoning && (
           <button
-            className={`py-2 px-4 text-sm font-semibold focus:outline-none ${
+            className={`py-2 px-4 text-sm md:text-base font-semibold focus:outline-none ${
               activeTab === "reasoning"
                 ? "border-b-2 border-blue-500 text-blue-500"
                 : "text-gray-600"
@@ -41,23 +41,23 @@ const TabbedDialogue = ({
       <div className="sm:max-h-none max-h-10 md:max-h-40 overflow-scroll">
         {activeTab === "latestMessage" && (
           <div className="latest-message">
-            <span className="text-xs">Gemini: </span>
+            <span className="text-xs md:text-base">Gemini: </span>
             <ReactTyped
               strings={[latestMessage]}
               typeSpeed={5}
               cursorChar=""
-              className="text-blue-600 text-xs"
+              className="text-blue-600 text-xs md:text-base"
             />
           </div>
         )}
         {activeTab === "reasoning" && (
           <div className="reasoning">
-            <span className="text-xs">Gemini: </span>
+            <span className="text-xs md:text-base">Gemini: </span>
             <ReactTyped
               strings={[`"${reasoning}"`]}
               typeSpeed={5}
               cursorChar=""
-              className="text-blue-600 italic text-xs leading-snug"
+              className="text-blue-600 italic text-xs leading-snug md:text-base"
             />
           </div>
         )}

@@ -108,6 +108,7 @@ export const chessStepsFunction = async ({
     gameHistory,
     position: game.fen(),
     gameId, // Return gameId to the client
+    gameOver: false,
   };
 };
 

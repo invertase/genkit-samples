@@ -4,6 +4,7 @@ import { Chessboard } from "react-chessboard";
 import { useMakeChessMove } from "../hooks/useChessMove";
 import TabbedDialogue from "./TabbedDialogue";
 import "./Board.css";
+
 const customBoardStyle: Record<string, string | number> = {
   borderRadius: "4px", // Rounded corners for a modern look
   boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // Soft shadow for depth
@@ -11,7 +12,6 @@ const customBoardStyle: Record<string, string | number> = {
 
 const customNotationStyle: Record<string, string> = {
   fontSize: "12px", // Font size for notation
-  // color: "white", // Notation color
 };
 
 const customLightSquareStyle: Record<string, string> = {
@@ -88,12 +88,14 @@ export default function Board() {
       console.error(error);
     }
     if (data) {
-      console.log(data);
       setGameId(data.gameId);
       setFen(data.position);
       if (fen !== "start") {
         setLatestMessage(data.smarmyComment);
         setReasoning(data.reasoning);
+      }
+      if (data.gameOver) {
+        setLatestMessage(`Game over! ${data.winner} wins.`);
       }
     }
   }, [data, error]);
@@ -139,6 +141,28 @@ export default function Board() {
                 <div className="text-white lg:text-xl mt-2 font-bold opacity-80 animate-pulse w-full text-center">
                   Gemini is thinking...
                 </div>
+              </div>
+            </>
+          )}
+          {data?.gameOver && (
+            <>
+              <div className="absolute inset-0 flex flex-col justify-center items-center bg-gray-700 bg-opacity-60"></div>
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center">
+                {data?.winner === "White" ? (
+                  <div className="text-white lg:text-2xl mt-2 font-bold opacity-90 w-full text-center">
+                    Game Over! You won!
+                  </div>
+                ) : (
+                  <div className="text-white lg:text-2xl mt-2 font-bold opacity-90 w-full text-center">
+                    Game Over! Gemini wins!
+                  </div>
+                )}
+                <button
+                  className="mt-4 bg-white text-gray-800 px-4 py-2 rounded font-semibold focus:outline-none"
+                  onClick={() => mutate({ move: "reset", gameId })}
+                >
+                  Play again!
+                </button>
               </div>
             </>
           )}

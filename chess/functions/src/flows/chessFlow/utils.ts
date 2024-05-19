@@ -18,6 +18,7 @@ export const resetGame = (
     gameHistory: [],
     position: game.fen(),
     gameId,
+    gameOver: false,
   };
 };
 
@@ -34,6 +35,8 @@ export const gameOverResponse = (
   gameHistory,
   position: game.fen(),
   gameId,
+  gameOver: true,
+  winner: game.turn() === "w" ? "Black" : "White",
 });
 
 // Helper function to validate moves using game history

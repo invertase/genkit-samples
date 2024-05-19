@@ -9,7 +9,7 @@
     "start": "node lib/index.js",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "compile": "tsc",
+    "compile": "tsc -p tsconfig.build.json",
     "build:clean": "rm -rf ./lib"
   },
   "engines": {

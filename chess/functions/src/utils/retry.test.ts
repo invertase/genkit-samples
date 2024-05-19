@@ -72,6 +72,6 @@ describe("simpleGenerateWithRetry", () => {
 
     expect(response).toEqual(dummyResponse);
     expect(generate).toHaveBeenCalledTimes(3);
-    expect(endTime - startTime).toBeGreaterThanOrEqual(2000); // Check if at least 2000 ms have passed (2 retries)
+    expect(endTime - startTime).toBeGreaterThanOrEqual(2000);
   }); // Increase timeout to accommodate real delays
 });

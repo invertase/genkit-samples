@@ -1,4 +1,4 @@
-import { chessStepsFunction, gameHistory } from ".";
+import { chessStepsFunction } from ".";
 import { simpleGenerateWithRetry } from "../../utils/retry";
 
 jest.mock("../../utils/retry", () => ({
@@ -23,11 +23,10 @@ jest.mock("chess.js", () => {
 
 describe("chessStepFunction", () => {
   beforeEach(() => {
-    gameHistory.length = 0; // Clear the game history
     jest.clearAllMocks();
   });
 
-  test('should reset the game when move is "reset"', async () => {
+  test("should reset the game when move is reset", async () => {
     const response = await chessStepsFunction({ move: "reset" });
     expect(response).toEqual({
       moveInPGNNotation: "",
@@ -36,6 +35,8 @@ describe("chessStepFunction", () => {
       availableMoves: ["a4", "a5"],
       gameHistory: [],
       position: "fen_string",
+      gameId: expect.any(String),
+      gameOver: false,
     });
     expect(mockChessInstance.reset).toHaveBeenCalled();
   });
@@ -57,6 +58,8 @@ describe("chessStepFunction", () => {
       reasoning: "Best strategic move",
       smarmyComment: "Checkmate soon",
       availableMoves: ["a4", "a5"],
+      gameId: expect.any(String),
+      gameOver: false,
       gameHistory: ["e2", "e4"],
       position: "fen_string",
     });
