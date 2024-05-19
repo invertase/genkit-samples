@@ -22,8 +22,6 @@ const chessGamesCollection = db.collection("chessGames");
 type StepFunctionInput = z.infer<typeof inputSchema>;
 type StepFunctionOutput = z.infer<typeof outputSchema>;
 
-export let gameHistory: string[] = [];
-
 // Main chess step function, asynchronously handles a move
 export const chessStepsFunction = async ({
   move,
@@ -31,6 +29,7 @@ export const chessStepsFunction = async ({
 }: StepFunctionInput): Promise<StepFunctionOutput> => {
   const game = new Chess();
   let gameDoc;
+  let gameHistory: string[] = [];
 
   // If gameId is undefined, create a new document
   if (!gameId) {
@@ -78,7 +77,7 @@ export const chessStepsFunction = async ({
     }),
     model: geminiPro,
     config: { temperature: 1 },
-    customValidation: validateMoveWithGameHistory,
+    customValidation: (res) => validateMoveWithGameHistory(res, gameHistory),
     output: {
       format: "json",
       schema: generateOutputSchema,

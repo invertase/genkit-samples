@@ -2,7 +2,6 @@ import { GenerateResponse } from "@genkit-ai/ai";
 import { Chess } from "chess.js";
 import { generateOutputSchema } from "./schema";
 import { z } from "zod";
-import { gameHistory } from ".";
 
 // Function to reset the game state
 export const resetGame = (
@@ -39,7 +38,8 @@ export const gameOverResponse = (
 
 // Helper function to validate moves using game history
 export const validateMoveWithGameHistory = async (
-  response: GenerateResponse<z.infer<typeof generateOutputSchema>>
+  response: GenerateResponse<z.infer<typeof generateOutputSchema>>,
+  gameHistory: string[]
 ) => {
   const tempGame = new Chess();
   gameHistory.forEach((move) => {
