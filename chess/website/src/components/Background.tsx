@@ -94,7 +94,7 @@ export const RainEffect: React.FC = () => {
   });
 
   return (
-    <div className="fixed w-[100vw] h-[100vh] overflow-hidden bg-gray-700">
+    <div className="fixed w-screen h-[100vh] overflow-hidden bg-gray-700">
       {pieces}
     </div>
   );

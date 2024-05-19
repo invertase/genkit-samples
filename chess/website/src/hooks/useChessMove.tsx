@@ -3,7 +3,7 @@ import { auth, appCheck } from "../firebase";
 import { getToken } from "firebase/app-check";
 import { getIdToken } from "firebase/auth";
 
-interface MoveResult {
+export interface MoveResult {
   position: string;
   smarmyComment: string;
   reasoning: string;
@@ -26,6 +26,7 @@ const postEngineMove = async ({
     }
 
     const idToken = await getIdToken(user);
+
     const appCheckToken = await getToken(appCheck, true);
 
     const response = await fetch(`api/chessFlow`, {
