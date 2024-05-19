@@ -13,7 +13,8 @@ export const resetGame = (
   return {
     moveInPGNNotation: "",
     reasoning: "Game reset",
-    smarmyComment: "",
+    smarmyComment:
+      "Hello! I am Gemini and I play chess. Make your move if you dare!",
     availableMoves: game.moves(),
     gameHistory: [],
     position: game.fen(),
