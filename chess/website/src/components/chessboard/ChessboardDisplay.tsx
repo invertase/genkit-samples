@@ -27,6 +27,8 @@ interface ChessboardDisplayProps {
   gameOver?: boolean;
   winner?: string;
   resetGame: () => void;
+  rateLimitError: boolean;
+  acceptRateLimitMessage: () => void;
 }
 
 export default function ChessboardDisplay({
@@ -36,6 +38,8 @@ export default function ChessboardDisplay({
   gameOver,
   winner,
   resetGame,
+  rateLimitError,
+  acceptRateLimitMessage,
 }: ChessboardDisplayProps) {
   return (
     <div className="relative bg-white p-1 rounded w-[80vw] mobile-h:w-[40vw] mobile-h:h-[40vw] fixed md:w-[40vw]">
@@ -51,6 +55,20 @@ export default function ChessboardDisplay({
           customNotationStyle={customNotationStyle}
         />
         {isPending && <LoadingOverlay />}
+        {rateLimitError && (
+          <div className="absolute inset-0 flex flex-col justify-center items-center bg-gray-700 bg-opacity-60">
+            <div className="text-white lg:text-2xl mt-2 font-bold opacity-90 w-full text-center">
+              Gemini rate limit exceeded. Please wait a few minutes before
+              making another move.
+            </div>
+            <button
+              className="mt-4 bg-white text-gray-800 px-4 py-2 rounded font-semibold focus:outline-none"
+              onClick={acceptRateLimitMessage}
+            >
+              OK
+            </button>
+          </div>
+        )}
         {gameOver && <GameOverOverlay winner={winner} resetGame={resetGame} />}
       </div>
     </div>

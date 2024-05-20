@@ -23,4 +23,5 @@ export const outputSchema = z.object({
   gameId: z.string(),
   gameOver: z.boolean(),
   winner: z.string().optional(),
+  errorCode: z.number().optional(),
 });

@@ -20,6 +20,10 @@ export default function ChessboardContainer() {
   const [latestMessage, setLatestMessage] = useState<string>(
     "Hello! I am Gemini and I play chess. Make your move if you dare!"
   );
+
+  const [acceptedRateLimitMessage, setAcceptedRateLimitMessage] =
+    useState(true);
+
   const [reasoning, setReasoning] = useState<string>("");
 
   const { mutate, data, error, isPending } = useMakeChessMove();
@@ -42,6 +46,9 @@ export default function ChessboardContainer() {
       if (data.gameOver) {
         setLatestMessage(`Game over! ${data.winner} wins.`);
       }
+      if (data.errorCode === 429) {
+        setAcceptedRateLimitMessage(false);
+      }
     }
   }, [data, error]);
 
@@ -62,8 +69,10 @@ export default function ChessboardContainer() {
         onDrop={(sourceSquare, targetSquare) =>
           onDrop(sourceSquare, targetSquare, fen, setFen, mutate, gameId)
         }
+        acceptRateLimitMessage={() => setAcceptedRateLimitMessage(true)}
         isPending={isPending}
         gameOver={data?.gameOver}
+        rateLimitError={!acceptedRateLimitMessage}
         winner={data?.winner}
         resetGame={() => mutate({ move: "reset", gameId })}
       />

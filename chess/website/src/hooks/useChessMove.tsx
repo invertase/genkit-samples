@@ -7,6 +7,8 @@ export interface MoveResult {
   position: string;
   trashTalk?: string;
   smarmyComment?: string;
+  errorCode?: number;
+  moveInPGNNotation: string;
   reasoning: string;
   gameId: string;
   gameOver: boolean;

@@ -9,7 +9,7 @@ const mockChessInstance = {
   reset: jest.fn(),
   isGameOver: jest.fn().mockReturnValue(false),
   moves: jest.fn().mockReturnValue(["a4", "a5"]),
-  move: jest.fn(),
+  move: jest.fn().mockImplementation(() => true),
   fen: jest.fn().mockReturnValue("fen_string"),
   pgn: jest.fn().mockReturnValue("pgn_string"),
 };
@@ -22,8 +22,9 @@ jest.mock("chess.js", () => {
 });
 
 describe("chessStepFunction", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
+    await chessStepsFunction({ move: "reset" });
   });
 
   test("should reset the game when move is reset", async () => {
@@ -31,7 +32,8 @@ describe("chessStepFunction", () => {
     expect(response).toEqual({
       moveInPGNNotation: "",
       reasoning: "Game reset",
-      trashTalk: "",
+      trashTalk:
+        "Hello! I am Gemini and I play chess. Make your move if you dare!",
       availableMoves: ["a4", "a5"],
       gameHistory: [],
       position: "fen_string",
@@ -44,27 +46,27 @@ describe("chessStepFunction", () => {
   test("should process a valid move and call LLM for next move", async () => {
     (simpleGenerateWithRetry as jest.Mock).mockResolvedValueOnce({
       output: jest.fn().mockReturnValue({
-        moveInPGNNotation: "e4",
+        moveInPGNNotation: "e5",
         reasoning: "Best strategic move",
         trashTalk: "Checkmate soon",
       }),
     });
 
-    const response = await chessStepsFunction({ move: "e2" });
+    const response = await chessStepsFunction({ move: "e4" });
 
     expect(simpleGenerateWithRetry).toHaveBeenCalled();
     expect(response).toEqual({
-      moveInPGNNotation: "e4",
+      moveInPGNNotation: "e5",
       reasoning: "Best strategic move",
       trashTalk: "Checkmate soon",
       availableMoves: ["a4", "a5"],
       gameId: expect.any(String),
       gameOver: false,
-      gameHistory: ["e2", "e4"],
+      gameHistory: ["e4", "e5"],
       position: "fen_string",
     });
-    expect(mockChessInstance.move).toHaveBeenCalledWith("e2");
     expect(mockChessInstance.move).toHaveBeenCalledWith("e4");
+    expect(mockChessInstance.move).toHaveBeenCalledWith("e5");
   });
 
   test("should throw an error if LLM returns no valid output", async () => {
@@ -72,8 +74,16 @@ describe("chessStepFunction", () => {
       output: jest.fn().mockReturnValue(null),
     });
 
-    await expect(chessStepsFunction({ move: "e2" })).rejects.toThrow(
-      "No output from LLM"
-    );
+    expect(await chessStepsFunction({ move: "e2" })).toBe({
+      availableMoves: ["a4", "a5"],
+      errorCode: 500,
+      gameHistory: ["e2"],
+      gameId: "LBfITcr2re9jAZgpMcBs",
+      gameOver: false,
+      moveInPGNNotation: "",
+      position: "fen_string",
+      reasoning: "No output from LLM",
+      trashTalk: "",
+    });
   });
 });
