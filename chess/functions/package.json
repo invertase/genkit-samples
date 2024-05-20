@@ -27,7 +27,8 @@
     "chess.js": "^1.0.0-beta.8",
     "express": "^4.19.2",
     "firebase-admin": "^12.1.0",
-    "firebase-functions": "^5.0.0",
+    "firebase-functions": "^5.0.1",
+    "genkitx-openai-plugin": "^0.3.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

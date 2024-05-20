@@ -3,7 +3,7 @@ import z from "zod";
 export const inputSchema = z.object({
   move: z.string(),
   gameId: z.string().optional(),
-  model: z.string().optional(),
+  model: z.string(),
 });
 
 export const generateOutputSchema = z.object({

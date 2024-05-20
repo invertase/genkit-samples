@@ -1,4 +1,3 @@
-import { GenerateResponse } from "@genkit-ai/ai";
 import { Chess } from "chess.js";
 import { generateOutputSchema } from "./schema";
 import { z } from "zod";
@@ -42,14 +41,18 @@ export const gameOverResponse = (
 
 // Helper function to validate moves using game history
 export const validateMoveWithGameHistory = async (
-  response: GenerateResponse<z.infer<typeof generateOutputSchema>>,
+  output: z.infer<typeof generateOutputSchema> | null,
   gameHistory: string[]
 ) => {
+  if (!output) {
+    return false;
+  }
+
   const tempGame = new Chess();
   gameHistory.forEach((move) => {
     tempGame.move(move);
   });
-  const pgnMove = response.output()?.moveInPGNNotation;
+  const pgnMove = output.moveInPGNNotation;
   if (!pgnMove) {
     return false;
   }

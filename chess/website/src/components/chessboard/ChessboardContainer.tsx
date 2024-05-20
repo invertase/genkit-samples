@@ -17,16 +17,27 @@ export default function ChessboardContainer() {
   const [gameId, setGameId] = useState<string | undefined>(
     "" as string | undefined
   );
-  const [latestMessage, setLatestMessage] = useState<string>(
-    "Hello! I am Gemini and I play chess. Make your move if you dare!"
-  );
   const [reasoning, setReasoning] = useState<string>("");
+  const [model, setModel] = useState<"gemini15ProPreview" | "gpt4">(
+    "gemini15ProPreview"
+  );
 
+  const modelDisplayName = model === "gemini15ProPreview" ? "Gemini" : "GPT-4";
+
+  const [latestMessage, setLatestMessage] = useState<string>(
+    `Hello! I am ${modelDisplayName} and I play chess. Make your move if you dare!`
+  );
   const { mutate, data, error, isPending } = useMakeChessMove();
 
   useEffect(() => {
     mutate({ move: "reset", gameId });
   }, []);
+
+  useEffect(() => {
+    setLatestMessage(
+      `Hello! I am ${modelDisplayName} and I play chess. Make your move if you dare!`
+    );
+  }, [model]);
 
   useEffect(() => {
     if (error) {
@@ -56,16 +67,22 @@ export default function ChessboardContainer() {
 
   return (
     <div className="absolute h-full w-full flex flex-col pt-20 mobile-h:pt-14 mobile-h:flex-row h-screen w-screen gap-4 p-2 mobile-h:justify-around justify-center items-center md:flex-col-reverse">
-      <TabbedDialogue latestMessage={latestMessage} reasoning={reasoning} />
+      <TabbedDialogue
+        latestMessage={latestMessage}
+        reasoning={reasoning}
+        setModel={setModel}
+        modelDisplayName={modelDisplayName}
+        currentModel={model}
+      />
       <ChessboardDisplay
         fen={fen}
         onDrop={(sourceSquare, targetSquare) =>
-          onDrop(sourceSquare, targetSquare, fen, setFen, mutate, gameId)
+          onDrop(sourceSquare, targetSquare, fen, model, setFen, mutate, gameId)
         }
         isPending={isPending}
         gameOver={data?.gameOver}
         winner={data?.winner}
-        resetGame={() => mutate({ move: "reset", gameId })}
+        resetGame={() => mutate({ move: "reset", gameId, model })}
       />
     </div>
   );
@@ -75,11 +92,16 @@ function onDrop(
   sourceSquare: Square,
   targetSquare: Square,
   fen: string,
+  model: "gemini15ProPreview" | "gpt4",
   setFen: (fen: string) => void,
   mutate: UseMutateFunction<
     MoveResult,
     Error,
-    { move: string; gameId: string | undefined },
+    {
+      move: string;
+      gameId: string | undefined;
+      model: "gemini15ProPreview" | "gpt4";
+    },
     unknown
   >,
   gameId?: string
@@ -98,7 +120,7 @@ function onDrop(
 
     const san = move.san;
     setFen(generateFen(fen, san));
-    mutate({ move: san, gameId });
+    mutate({ move: san, gameId, model });
     return true;
   } catch (error) {
     console.warn("Invalid move!", error);

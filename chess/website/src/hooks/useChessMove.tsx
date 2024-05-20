@@ -16,9 +16,11 @@ export interface MoveResult {
 const postEngineMove = async ({
   move,
   gameId,
+  model,
 }: {
   move: string;
   gameId: string | undefined;
+  model: "gemini15ProPreview" | "gpt4";
 }): Promise<MoveResult> => {
   try {
     const user = auth.currentUser;
@@ -30,14 +32,14 @@ const postEngineMove = async ({
 
     const appCheckToken = await getToken(appCheck, true);
 
-    const response = await fetch(`api/chessFlow`, {
+    const response = await fetch(`api/chessFlowStaging`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${idToken}`,
         "X-Firebase-AppCheck": appCheckToken.token,
       },
-      body: JSON.stringify({ data: { move, gameId } }),
+      body: JSON.stringify({ data: { move, gameId, model } }),
     });
 
     if (!response.ok) {
@@ -47,11 +49,19 @@ const postEngineMove = async ({
 
     return result;
   } catch (error) {
-    throw new Error("Gemini refused to make a legal move");
+    throw new Error("The model refused to make a legal move");
   }
 };
 export const useMakeChessMove = () =>
-  useMutation<MoveResult, Error, { move: string; gameId: string | undefined }>({
+  useMutation<
+    MoveResult,
+    Error,
+    {
+      move: string;
+      gameId: string | undefined;
+      model: "gemini15ProPreview" | "gpt4";
+    }
+  >({
     mutationFn: postEngineMove,
     onError: (error: Error) => {
       console.error("Error making move:", error.message);

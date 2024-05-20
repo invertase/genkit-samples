@@ -3,9 +3,9 @@ import { onFlow } from "@genkit-ai/firebase/functions";
 import { chessStepsFunction } from "./stepFunction";
 import { authPolicy } from "./authPolicy";
 
-export const chessFlow = onFlow(
+export const chessFlowStaging = onFlow(
   {
-    name: "chessFlow",
+    name: "chessFlowStaging",
     inputSchema,
     outputSchema,
     authPolicy,

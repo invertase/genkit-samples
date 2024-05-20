@@ -1,16 +1,11 @@
 import z from "zod";
 import { Chess } from "chess.js";
-import { simpleGenerateWithRetry } from "../../utils/retry";
 import { chessPrompt } from "./prompt";
-import { generateOutputSchema, inputSchema, outputSchema } from "./schema";
+import { inputSchema, outputSchema } from "./schema";
 import * as admin from "firebase-admin";
 
-import {
-  gameOverResponse,
-  resetGame,
-  validateMoveWithGameHistory,
-} from "./utils";
-import { gemini15ProPreview } from "@genkit-ai/vertexai";
+import { gameOverResponse, resetGame } from "./utils";
+import { generateMove } from "./generate";
 
 // Initialize Firebase Admin SDK
 admin.initializeApp();
@@ -25,6 +20,7 @@ type StepFunctionOutput = z.infer<typeof outputSchema>;
 export const chessStepsFunction = async ({
   move,
   gameId,
+  model,
 }: StepFunctionInput): Promise<StepFunctionOutput> => {
   const game = new Chess();
   let gameDoc;
@@ -68,30 +64,21 @@ export const chessStepsFunction = async ({
     return gameOverResponse(game, gameHistory, gameId);
   }
 
-  // Generate the next move using the AI
-  const llmResponse = await simpleGenerateWithRetry({
-    prompt: chessPrompt({
-      gameHistoryString: gameHistory
-        .map((value, i) => `${i}. ${value}`)
-        .join(","),
-      availableMovesString: game.moves().join(","),
-      fenString: game.fen(),
-    }),
-    model: gemini15ProPreview,
-    config: { temperature: 1 },
-    customValidation: (res) => validateMoveWithGameHistory(res, gameHistory),
-    output: {
-      format: "json",
-      schema: generateOutputSchema,
-    },
-    retries: 5,
+  const prompt = chessPrompt({
+    gameHistoryString: gameHistory
+      .map((value, i) => `${i}. ${value}`)
+      .join(","),
+    availableMovesString: game.moves().join(","),
+    fenString: game.fen(),
   });
 
-  // Handle AI output
-  const output = llmResponse.output();
-  if (output === null) {
-    throw new Error("No output from LLM");
-  }
+  console.log("Model: ", model);
+
+  const output = await generateMove(
+    model || "gemini15ProPreview",
+    prompt,
+    gameHistory
+  );
 
   const { moveInPGNNotation, reasoning, trashTalk } = output;
 

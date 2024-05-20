@@ -4,7 +4,7 @@ import { initializeGenkit } from "@genkit-ai/core";
 initializeGenkit(config);
 
 // Export the chessFlow
-export { chessFlow } from "./flows/chessFlow/index.js";
+export { chessFlowStaging } from "./flows/chessFlow/index.js";
 
 // Start the flows server
 // startFlowsServer({

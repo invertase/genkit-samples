@@ -8,7 +8,7 @@ export default defineConfig({
     cors: { origin: "*" },
     proxy: {
       "/api": {
-        target: "https://chessflow-7gzxnlw77q-uc.a.run.app",
+        // target: "https://chessflowstaging-7gzxnlw77q-uc.a.run.app",
         changeOrigin: true,
         // rewrite: (path) => path.replace(/^\/api/, ""),
       },
