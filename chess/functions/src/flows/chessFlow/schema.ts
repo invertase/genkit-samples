@@ -6,6 +6,7 @@ export const inputSchema = z.object({
 });
 
 export const generateOutputSchema = z.object({
+  blackPiecesUnderAttack: z.string(),
   moveInPGNNotation: z.string(),
   reasoning: z.string(),
   smarmyComment: z.string(),

@@ -24,4 +24,9 @@ ${gameHistoryString}
 <AvailableMoves>
 ${availableMovesString}
 </AvailableMoves>
+<Tips>
+- Before you decide on your move, please consider what pieces are under attack, and what pieces you can attack.
+- Remember that the goal of chess is to checkmate the opponent's king.
+- try to develop your pieces to control the center of the board.
+</Tips>
 `;

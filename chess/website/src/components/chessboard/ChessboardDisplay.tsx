@@ -38,7 +38,7 @@ export default function ChessboardDisplay({
   resetGame,
 }: ChessboardDisplayProps) {
   return (
-    <div className="relative bg-white p-2 rounded w-[80vw] mobile-h:w-[40vw] mobile-h:h-[40vw] fixed md:w-[40vw]">
+    <div className="relative bg-white p-1 rounded w-[80vw] mobile-h:w-[40vw] mobile-h:h-[40vw] fixed md:w-[40vw]">
       <div
         className={` w-auto relative h-full ${isPending ? "opacity-50" : ""}`}
       >

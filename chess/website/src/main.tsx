@@ -6,7 +6,6 @@ import { auth } from "./firebase";
 import { signInAnonymously } from "firebase/auth";
 
 signInAnonymously(auth).then(() => {
-  console.log("Signed in anonymously");
   ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
       <App />

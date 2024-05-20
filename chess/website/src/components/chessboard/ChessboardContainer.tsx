@@ -47,7 +47,7 @@ export default function ChessboardContainer() {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center p-4 bg-white rounded-lg shadow">
+      <div className="flex flex-col items-center p-4  bg-white rounded-lg shadow">
         <div className="mt-4 p-2 text-center font-bold">Error:</div>
         <div className="mt-2 p-2 text-center">{error.message}</div>
       </div>
@@ -55,7 +55,7 @@ export default function ChessboardContainer() {
   }
 
   return (
-    <div className="absolute h-full w-full flex flex-col pt-20 mobile-h:pt-14 mobile-h:flex-row h-screen w-screen gap-4 p-4 mobile-h:ustify-around justify-center items-center md:flex-col-reverse">
+    <div className="absolute h-full w-full flex flex-col pt-20 mobile-h:pt-14 mobile-h:flex-row h-screen w-screen gap-4 p-2 mobile-h:justify-around justify-center items-center md:flex-col-reverse">
       <TabbedDialogue latestMessage={latestMessage} reasoning={reasoning} />
       <ChessboardDisplay
         fen={fen}
