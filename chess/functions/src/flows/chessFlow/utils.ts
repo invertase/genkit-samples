@@ -13,7 +13,7 @@ export const resetGame = (
   return {
     moveInPGNNotation: "",
     reasoning: "Game reset",
-    smarmyComment:
+    trashTalk:
       "Hello! I am Gemini and I play chess. Make your move if you dare!",
     availableMoves: game.moves(),
     gameHistory: [],
@@ -31,7 +31,7 @@ export const gameOverResponse = (
 ) => ({
   moveInPGNNotation: game.pgn(),
   reasoning: "Game is over",
-  smarmyComment: "",
+  trashTalk: "",
   availableMoves: [],
   gameHistory,
   position: game.fen(),

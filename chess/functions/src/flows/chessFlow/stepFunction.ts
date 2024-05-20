@@ -10,7 +10,7 @@ import {
   resetGame,
   validateMoveWithGameHistory,
 } from "./utils";
-import { geminiPro } from "@genkit-ai/vertexai";
+import { gemini15ProPreview } from "@genkit-ai/vertexai";
 
 // Initialize Firebase Admin SDK
 admin.initializeApp();
@@ -71,10 +71,13 @@ export const chessStepsFunction = async ({
   // Generate the next move using the AI
   const llmResponse = await simpleGenerateWithRetry({
     prompt: chessPrompt({
-      gameHistoryString: gameHistory.join(" "),
-      availableMovesString: game.moves().join(" "),
+      gameHistoryString: gameHistory
+        .map((value, i) => `${i}. ${value}`)
+        .join(","),
+      availableMovesString: game.moves().join(","),
+      fenString: game.fen(),
     }),
-    model: geminiPro,
+    model: gemini15ProPreview,
     config: { temperature: 1 },
     customValidation: (res) => validateMoveWithGameHistory(res, gameHistory),
     output: {
@@ -90,7 +93,7 @@ export const chessStepsFunction = async ({
     throw new Error("No output from LLM");
   }
 
-  const { moveInPGNNotation, reasoning, smarmyComment } = output;
+  const { moveInPGNNotation, reasoning, trashTalk } = output;
 
   // Update game with AI move
   game.move(moveInPGNNotation);
@@ -102,7 +105,7 @@ export const chessStepsFunction = async ({
   return {
     moveInPGNNotation,
     reasoning,
-    smarmyComment,
+    trashTalk,
     availableMoves: game.moves(),
     gameHistory,
     position: game.fen(),

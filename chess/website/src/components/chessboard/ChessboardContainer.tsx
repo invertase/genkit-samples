@@ -36,7 +36,7 @@ export default function ChessboardContainer() {
       setGameId(data.gameId);
       setFen(data.position);
       if (fen !== "start") {
-        setLatestMessage(data.smarmyComment);
+        setLatestMessage(data.trashTalk || data.smarmyComment || "");
         setReasoning(data.reasoning);
       }
       if (data.gameOver) {

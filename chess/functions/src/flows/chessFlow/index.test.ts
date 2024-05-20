@@ -31,7 +31,7 @@ describe("chessStepFunction", () => {
     expect(response).toEqual({
       moveInPGNNotation: "",
       reasoning: "Game reset",
-      smarmyComment: "",
+      trashTalk: "",
       availableMoves: ["a4", "a5"],
       gameHistory: [],
       position: "fen_string",
@@ -46,7 +46,7 @@ describe("chessStepFunction", () => {
       output: jest.fn().mockReturnValue({
         moveInPGNNotation: "e4",
         reasoning: "Best strategic move",
-        smarmyComment: "Checkmate soon",
+        trashTalk: "Checkmate soon",
       }),
     });
 
@@ -56,7 +56,7 @@ describe("chessStepFunction", () => {
     expect(response).toEqual({
       moveInPGNNotation: "e4",
       reasoning: "Best strategic move",
-      smarmyComment: "Checkmate soon",
+      trashTalk: "Checkmate soon",
       availableMoves: ["a4", "a5"],
       gameId: expect.any(String),
       gameOver: false,

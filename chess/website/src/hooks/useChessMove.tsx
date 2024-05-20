@@ -5,7 +5,8 @@ import { getIdToken } from "firebase/auth";
 
 export interface MoveResult {
   position: string;
-  smarmyComment: string;
+  trashTalk?: string;
+  smarmyComment?: string;
   reasoning: string;
   gameId: string;
   gameOver: boolean;
