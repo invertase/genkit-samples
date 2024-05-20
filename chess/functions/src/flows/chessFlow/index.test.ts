@@ -74,16 +74,16 @@ describe("chessStepFunction", () => {
       output: jest.fn().mockReturnValue(null),
     });
 
-    expect(await chessStepsFunction({ move: "e2" })).toBe({
-      availableMoves: ["a4", "a5"],
-      errorCode: 500,
-      gameHistory: ["e2"],
-      gameId: "LBfITcr2re9jAZgpMcBs",
-      gameOver: false,
-      moveInPGNNotation: "",
-      position: "fen_string",
-      reasoning: "No output from LLM",
-      trashTalk: "",
-    });
+    const result = await chessStepsFunction({ move: "e2" });
+
+    expect(result.availableMoves).toEqual(["a4", "a5"]);
+    expect(result.errorCode).toEqual(500);
+    expect(result.gameHistory).toEqual(["e2"]);
+    expect(result.gameId).toEqual(expect.any(String));
+    expect(result.gameOver).toEqual(false);
+    expect(result.moveInPGNNotation).toEqual("");
+    expect(result.position).toEqual("fen_string");
+    expect(result.reasoning).toEqual("No output from LLM");
+    expect(result.trashTalk).toEqual("");
   });
 });

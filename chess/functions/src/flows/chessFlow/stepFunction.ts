@@ -67,18 +67,15 @@ export const chessStepsFunction = async ({
       game.move(historyMove);
     });
 
-    console.log(game.fen());
+    console.debug(game.fen());
 
     // Make the move
-    const isMoveValid = game.move(move);
-    if (!isMoveValid) {
-      console.error(`Invalid move: ${move}`);
+    try {
+      game.move(move);
+    } catch (error) {
       throw new ChessGameError("Invalid move", 400);
     }
     gameHistory.push(move);
-
-    // Save the current game state to Firestore
-    await gameDoc.set({ moves: gameHistory });
 
     if (game.isGameOver()) {
       await gameDoc.delete();

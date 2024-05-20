@@ -49,7 +49,7 @@ const postEngineMove = async ({
 
     return result;
   } catch (error) {
-    throw new Error("Gemini refused to make a legal move");
+    throw error;
   }
 };
 export const useMakeChessMove = () =>

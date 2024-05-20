@@ -14,16 +14,13 @@ const generateFen = (oldFen: string, move: string) => {
 
 export default function ChessboardContainer() {
   const [fen, setFen] = useState<string>("start");
-  const [gameId, setGameId] = useState<string | undefined>(
-    "" as string | undefined
-  );
+  const [previousFen, setPreviousFen] = useState<string>("start");
+  const [gameId, setGameId] = useState<string | undefined>(undefined);
   const [latestMessage, setLatestMessage] = useState<string>(
     "Hello! I am Gemini and I play chess. Make your move if you dare!"
   );
-
   const [acceptedRateLimitMessage, setAcceptedRateLimitMessage] =
     useState(true);
-
   const [reasoning, setReasoning] = useState<string>("");
 
   const { mutate, data, error, isPending } = useMakeChessMove();
@@ -33,12 +30,15 @@ export default function ChessboardContainer() {
   }, []);
 
   useEffect(() => {
-    if (error) {
-      console.error(error);
+    if (data?.errorCode) {
+      setFen(previousFen); // Revert to the previous position if there's an error
     }
     if (data) {
+      setPreviousFen(fen); // Store the current position before updating it
       setGameId(data.gameId);
-      setFen(data.position);
+      if (!data?.errorCode) {
+        setFen(data.position);
+      }
       if (fen !== "start") {
         setLatestMessage(data.trashTalk || data.smarmyComment || "");
         setReasoning(data.reasoning);
@@ -67,7 +67,15 @@ export default function ChessboardContainer() {
       <ChessboardDisplay
         fen={fen}
         onDrop={(sourceSquare, targetSquare) =>
-          onDrop(sourceSquare, targetSquare, fen, setFen, mutate, gameId)
+          onDrop(
+            sourceSquare,
+            targetSquare,
+            fen,
+            setFen,
+            mutate,
+            gameId,
+            setPreviousFen
+          )
         }
         acceptRateLimitMessage={() => setAcceptedRateLimitMessage(true)}
         isPending={isPending}
@@ -91,7 +99,8 @@ function onDrop(
     { move: string; gameId: string | undefined },
     unknown
   >,
-  gameId?: string
+  gameId?: string,
+  setPreviousFen?: (fen: string) => void
 ) {
   try {
     const game = new Chess(fen);
@@ -106,6 +115,7 @@ function onDrop(
     }
 
     const san = move.san;
+    setPreviousFen?.(fen); // Store the previous FEN position before making a move
     setFen(generateFen(fen, san));
     mutate({ move: san, gameId });
     return true;
