@@ -1,0 +1,30 @@
+{
+  "name": "firestore",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node lib/index.js",
+    "build": "tsc",
+    "build:watch": "tsc --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@genkit-ai/ai": "^0.5.1",
+    "@genkit-ai/core": "^0.5.1",
+    "@genkit-ai/dotprompt": "^0.5.1",
+    "@genkit-ai/firebase": "^0.5.1",
+    "@genkit-ai/flow": "^0.5.1",
+    "@genkit-ai/vertexai": "^0.5.1",
+    "@google-cloud/bigquery": "^7.7.0",
+    "express": "^4.19.2",
+    "zod": "^3.23.8",
+    "zoq": "^0.0.7"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
