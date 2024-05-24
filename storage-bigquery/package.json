@@ -1,7 +1,7 @@
 {
-  "name": "firestore",
-  "version": "1.0.0",
-  "description": "",
+  "name": "genkit-storage-bigquery-integration",
+  "version": "0.0.1",
+  "description": "A project integrating Firebase Genkit with Firebase Storage and Google Cloud BigQuery for image description and data storage.",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,7 +10,7 @@
     "build:watch": "tsc --watch"
   },
   "keywords": [],
-  "author": "",
+  "author": "cabljac",
   "license": "ISC",
   "dependencies": {
     "@genkit-ai/ai": "^0.5.1",
