@@ -11,7 +11,7 @@ const TabbedDialogue = ({
   const [activeTab, setActiveTab] = useState("latestMessage");
 
   return (
-    <div className="relative w-[80vw] h-[30vh] mobile-h:w-[40vw] mobile-h:h-[30vw] relative md:w-[40vw] md:h-[30vh] overflow-scroll ">
+    <div className="relative w-[80vw] h-[30vh] mobile-h:w-[40vw] mobile-h:h-[30vw] relative md:w-[40vw] md:h-[30vh] overflow-scroll md:overflow-visible">
       <div className="bg-white border-solid border rounded p-4">
         <div className="flex border-b mb-4 w-full">
           {latestMessage && (
@@ -39,7 +39,7 @@ const TabbedDialogue = ({
             </button>
           )}
         </div>
-        <div className="sm:max-h-none md:max-h-40 overflow-scroll">
+        <div className="sm:max-h-none md:max-h-40 overflow-auto">
           {activeTab === "latestMessage" && (
             <div className="latest-message">
               <span className="md:text-base">Gemini: </span>
