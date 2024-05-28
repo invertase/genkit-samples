@@ -64,7 +64,7 @@ runFlow(codeFlow, {
 })
   .then((response) => {
     const finalResponse = `
-    ## Disclaimer: This is an automatic AI-generated response \n
+    Disclaimer: This is an automatic AI-generated response. \n\n
     ${response}
     `;
 
