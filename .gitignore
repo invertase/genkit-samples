@@ -4,3 +4,5 @@
 **/*.env
 **/.DS_Store
 **/ui-debug.log
+**/genkit-sql/firebase-debug.log
+**/genkit-sql/firestore-debug.log
