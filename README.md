@@ -19,6 +19,20 @@ This repository includes the following samples:
 
 For detailed instructions on each sample, refer to the README file within the respective sample project directories.
 
+## List of Samples
+
+- [Astro Starter Kit: Minimal](./astro)
+- [Basic Chat Bot](./basic-chat)
+- [Chess Against Gemini AI](./chess)
+- [Flowception](./flowception)
+- [Genkit Speaks](./genkit-speaks)
+- [GitHub Triage Bot with Firebase Genkit](./github-action)
+- [Huggingface Daily Papers Summary](./hf-daily-papers-summary)
+- [Firebase Genkit Sample with Next.js](./nextjs)
+- [Playwright Helper with Firebase Genkit](./playwright)
+- [Genkit Firebase Storage and BigQuery Sample](./storage-bigquery)
+- [Genkit Natural Language to SQL](./genkit-sql)
+
 ## Contributing
 
 We welcome contributions! If you have a sample project or improvement to share, please follow these steps:
@@ -27,8 +41,6 @@ We welcome contributions! If you have a sample project or improvement to share, 
 2. Create a new branch for your feature or fix.
 3. Commit your changes and push the branch to your fork.
 4. Open a pull request to this repository with a description of your changes.
-
-## License
 
 ## License
 
