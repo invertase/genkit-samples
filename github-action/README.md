@@ -8,7 +8,7 @@ The workflow runs whenever a new issue is opened. The GitHub action will:
 
 1. Check out both the script (built with Genkit) and a GitHub repository of your choice.
 2. Traverse the checked out GitHub repo, gathering files with a file extension of your choice (coming soon, only TypeScript is currently supported!).
-3. Prompt Gemini (using its immense context window) to generate a helpful response to the opened issue, using the source code as a reference.
+3. Prompt Gemini (using its 1M context window) to generate a helpful response to the opened issue, using the source code as a reference.
 4. Comment the response on the triggering issue.
 
 ## Setup Instructions
