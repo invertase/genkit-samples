@@ -57,15 +57,18 @@ configureGenkit({
 
 export { tsFlow };
 
-console.log(Object.keys(content));
-
 runFlow(tsFlow, {
   issueTitle: process.env.ISSUE_TITLE,
   issueBody: process.env.ISSUE_BODY,
   content: JSON.stringify(content),
 })
   .then((response) => {
-    fs.writeFileSync(bodyPath, response);
+    const finalResponse = `
+    ## Disclaimer: This is an automatic AI-generated response \n
+    ${response}
+    `;
+
+    fs.writeFileSync(bodyPath, finalResponse);
   })
   .catch((e) => {
     console.error(e);
