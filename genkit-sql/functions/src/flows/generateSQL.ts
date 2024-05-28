@@ -1,8 +1,11 @@
-import { generate } from "@genkit-ai/ai";
-import { defineFlow } from "@genkit-ai/flow";
-import { z } from "zod";
-import { Introspect, introspect } from "../introspect";
 import { gemini15ProPreview } from "@genkit-ai/vertexai";
+import { generate } from "@genkit-ai/ai";
+import { noAuth, onFlow } from "@genkit-ai/firebase/functions";
+import { z } from "zod";
+
+import { type Introspect, introspect } from "../utils/introspect";
+import { getFirestore } from "firebase-admin/firestore";
+import { getSql } from "../utils/db";
 
 const sampleRow = {
   restaurant_link: "g1024186-d6839181",
@@ -75,6 +78,7 @@ Instructions:
 4. You need to generate an SQL query that will fulfill the requirements of the query given to you.
 5. Eliminate any comments or additional information.
 6. Eliminate code blocks and markdown from the response.
+7. End your response with a semicolon.
 `;
 
 function generatePrompt(introspection: Introspect, query: string) {
@@ -95,15 +99,69 @@ Query: ${query}
 `;
 }
 
-export const generateSQL = defineFlow(
+const firestore = getFirestore();
+
+const InputSchema = z
+  .object({
+    // Whether to execute previously generated query or generate SQL
+    execute: z.boolean().default(false),
+    // The query to generate SQL for
+    query: z.string().optional(),
+    // The queryId to execute
+    queryId: z.string().optional(),
+  })
+  .superRefine((data, context) => {
+    if (!data.query && !data.execute) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "'query' is required if 'execute' is false or nullish",
+        path: ["query"],
+      });
+    }
+
+    if (!data.queryId && data.execute) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "'queryId' is required if 'execute' is true",
+        path: ["queryId"],
+      });
+    }
+  });
+
+const OutputSchema = z.union([
+  // When generating a new query, the output will be the generated SQL and a queryId
+  z.object({
+    sql: z.string(),
+    queryId: z.string(),
+  }),
+  // When executing a query, the output will be the result of the query
+  z.record(z.any()),
+]);
+
+export const generateOrExecuteSQL = onFlow(
   {
-    name: "generateSQL",
-    inputSchema: z.object({ query: z.string() }),
-    outputSchema: z.string(),
+    name: "generateOrExecuteSQL",
+    inputSchema: InputSchema,
+    outputSchema: OutputSchema,
+    authPolicy: noAuth(),
   },
-  async ({ query }) => {
+  async ({ query, queryId, execute }) => {
+    if (execute) {
+      const sql = getSql();
+      const queryDoc = await firestore
+        .collection("queries")
+        .doc(queryId!)
+        .get();
+      if (!queryDoc.exists) {
+        throw new Error("Query not found");
+      }
+      const sqlQuery = queryDoc.data()!.sql as string;
+      console.log("Executing query", sqlQuery);
+      return await sql.unsafe(sqlQuery);
+    }
+
     const db_introspection = await introspect();
-    const prompt = generatePrompt(db_introspection, query);
+    const prompt = generatePrompt(db_introspection, query!);
 
     const llmResponse = await generate({
       prompt,
@@ -123,6 +181,12 @@ export const generateSQL = defineFlow(
     if (!output) {
       throw new Error("No output from model");
     }
-    return output.sql;
+
+    const doc = await firestore.collection("queries").add({ sql: output.sql });
+
+    return {
+      sql: output.sql,
+      queryId: doc.id,
+    };
   },
 );

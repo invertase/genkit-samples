@@ -1,8 +1,9 @@
-import { z } from "zod";
-import { Introspect, introspect } from "../introspect";
-import { defineFlow } from "@genkit-ai/flow";
-import { generate } from "@genkit-ai/ai";
 import { gemini15ProPreview } from "@genkit-ai/vertexai";
+import { generate } from "@genkit-ai/ai";
+import { noAuth, onFlow } from "@genkit-ai/firebase/functions";
+import { z } from "zod";
+
+import { type Introspect, introspect } from "../utils/introspect";
 
 const PROMPT_PREFIX = `
 You are a SQL developer working on a database. You are tasked to answer questions about the database.
@@ -28,11 +29,12 @@ Question: ${query}
 
 const OutputSchema = z.string();
 
-export const ask = defineFlow(
+export const ask = onFlow(
   {
     name: "ask",
     inputSchema: z.object({ query: z.string() }),
     outputSchema: OutputSchema,
+    authPolicy: noAuth(),
   },
   async ({ query }) => {
     const db_introspection = await introspect();

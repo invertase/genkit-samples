@@ -3,3 +3,4 @@
 **/lib
 **/*.env
 **/.DS_Store
+**/ui-debug.log

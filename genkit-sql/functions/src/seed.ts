@@ -1,11 +1,11 @@
 import "dotenv/config";
-import { sql } from "./db";
+import { getSql } from "./utils/db";
 import * as fs from "fs";
 import * as path from "path";
 import { parse } from "csv-parse";
 
 (async function seed() {
-  // if (false)
+  const sql = getSql();
   await sql`
     CREATE TABLE IF NOT EXISTS restaurants (
       restaurant_link TEXT PRIMARY KEY,
@@ -55,7 +55,12 @@ import { parse } from "csv-parse";
 
   const rawCSVData = fs
     .readFileSync(
-      path.join(__dirname, "..", "tripadvisor_european_restaurants_sample.csv"),
+      path.join(
+        __dirname,
+        "..",
+        "..",
+        "tripadvisor_european_restaurants_sample.csv",
+      ),
     )
     .toString();
 
