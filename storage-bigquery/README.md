@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project demonstrates the integration of Firebase Genkit with Firebase Storage and Google Cloud BigQuery to describe images and store the generated descriptions in BigQuery tables. The flows defined in this sample are designed to process images, generate descriptions using the Vertex AI Gemini Pro Vision model, and store the results in a BigQuery table.
+This project demonstrates the integration of Firebase Genkit with Firebase Storage and Google Cloud BigQuery to describe images and store the generated metadata in BigQuery tables. The flows defined in this sample are designed to process images, generate descriptions using the Vertex AI Gemini Pro Vision model, and store the results in a BigQuery table.
 
 ## Defined Flows
 
