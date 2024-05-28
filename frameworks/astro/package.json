@@ -1,0 +1,39 @@
+{
+  "main": "lib/index.js",
+  "scripts": {
+    "start": "astro dev",
+    "start:genkit": "genkit start",
+    "compile": "tsc",
+    "build": "astro check && astro build",
+    "build:clean": "rm -rf ./lib",
+    "build:watch": "tsc --watch",
+    "dev": "astro dev",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "name": "chat-app",
+  "type": "module",
+  "version": "0.0.1",
+  "dependencies": {
+    "@astrojs/check": "^0.5.10",
+    "@astrojs/react": "^3.2.0",
+    "@astrojs/tailwind": "^5.1.0",
+    "@genkit-ai/ai": "^0.5.0-rc.8",
+    "@genkit-ai/core": "^0.5.0-rc.8",
+    "@genkit-ai/dotprompt": "^0.5.0-rc.8",
+    "@genkit-ai/flow": "^0.5.0-rc.8",
+    "@genkit-ai/googleai": "^0.5.0-rc.8",
+    "@types/react": "^18.2.75",
+    "@types/react-dom": "^18.2.24",
+    "astro": "^4.5.18",
+    "express": "^4.19.2",
+    "genkit": "^0.5.0-rc.8",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^3.4.3",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
