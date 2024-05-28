@@ -2,6 +2,8 @@
 
 This repository contains a sample that demonstrates how to use Genkit to convert natural language questions to SQL queries. The sample uses a dataset of TripAdvisor European Restaurants to demonstrate how to convert natural language questions to SQL queries. After generating a query, you can use the `queryId` to execute the generated query.
 
+This sample automatically introspects your database schema to generate SQL queries. You can ask questions about your database schema, and the sample will provide you with the answer.
+
 > [!NOTE]
 > It currently only supports PostgreSQL.
 
