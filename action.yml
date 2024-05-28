@@ -1,0 +1,54 @@
+name: Triage Issue with Gemini
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    environment: triage
+
+    steps:
+      - name: Checkout Source Code Repository
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ vars.SOURCE_CODE_OWNER }}/${{ vars.SOURCE_CODE_REPO }}
+          path: source-code
+          token: ${{ secrets.BOT_PAT }} # Personal access token for the bot account
+
+      - name: Checkout Genkit Samples Repository (GitHub Action Branch)
+        uses: actions/checkout@v3
+        with:
+          repository: invertase/genkit-samples
+          path: genkit-samples
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Cache npm Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install and Build Genkit Samples
+        run: cd genkit-samples/github-action && npm install && npm run build
+
+      - name: Execute Compiled Script
+        env:
+          GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: node genkit-samples/github-action/lib/index.js
+
+      - name: Post Comment on Issue
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body-path: genkit-samples/github-action/lib/issue-comment.md
+          token: ${{ secrets.BOT_PAT }} # Personal access token for the bot account
