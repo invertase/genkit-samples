@@ -1,5 +1,4 @@
 import { generate } from "@genkit-ai/ai";
-import { noAuth, onFlow } from "@genkit-ai/firebase/functions";
 import { geminiProVision } from "@genkit-ai/vertexai";
 import * as z from "zod";
 import * as admin from "firebase-admin";

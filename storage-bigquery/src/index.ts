@@ -4,7 +4,11 @@ import { vertexAI } from "@genkit-ai/vertexai";
 import { firebase } from "@genkit-ai/firebase";
 import { defineFlow, runFlow } from "@genkit-ai/flow";
 import { imageDescriptionFlow } from "./flows/imageDescriptionFlow";
-import { writeToBigQueryFlow } from "./flows/writeToBigQueryFlow";
+import {
+  writeToBigQueryFlow,
+  createDatasetAndTableFlow,
+} from "./flows/writeToBigQueryFlow";
+import { writeToFirestoreFlow } from "./flows/writeToFirestoreFlow";
 
 configureGenkit({
   plugins: [firebase(), vertexAI({ location: "us-central1" })],
@@ -12,11 +16,9 @@ configureGenkit({
   enableTracingAndMetrics: true,
 });
 
-export { imageDescriptionFlow } from "./flows/imageDescriptionFlow";
-export {
-  writeToBigQueryFlow,
-  createDatasetAndTableFlow,
-} from "./flows/writeToBigQueryFlow";
+export { imageDescriptionFlow };
+export { writeToBigQueryFlow, createDatasetAndTableFlow };
+export { writeToFirestoreFlow };
 
 export const totalFlow = defineFlow(
   {
