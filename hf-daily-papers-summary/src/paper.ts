@@ -1,18 +1,13 @@
-import pdf from 'pdf-parse';
-import { chunk } from 'llm-chunk';
+import pdf from "pdf-parse";
+import { chunk } from "llm-chunk";
 
 export class PapersService {
-  private readonly apiEndpoint = 'https://huggingface.co/api/daily_papers';
+  private readonly apiEndpoint = "https://huggingface.co/api/daily_papers";
   private getTodayPapersEndpoint = () =>
-    `${this.apiEndpoint}?date=${new Date().toISOString().split('T')[0]}`;
+    `${this.apiEndpoint}?date=${new Date().toISOString().split("T")[0]}`;
 
   private getArxivPaperUrl = (paperId: string) =>
     `https://arxiv.org/pdf/${paperId}.pdf?download=true`;
-
-  private readonly chunkingConfig = {
-    chunkSize: 500,
-    overlap: 100,
-  };
 
   async getTodayPapers() {
     const response = await fetch(this.getTodayPapersEndpoint());
@@ -22,13 +17,13 @@ export class PapersService {
   }
 
   async getPapersByDate(date: Date) {
-    const dateString = date.toISOString().split('T')[0];
+    const dateString = date.toISOString().split("T")[0];
     const response = await fetch(`${this.apiEndpoint}?date=${dateString}`);
     const papers = await response.json();
 
     papers.forEach((paper: any) => {
       paper.arxiv = this.getArxivPaperUrl(paper.paper.id);
-      paper.summary = paper.paper.summary.replace(/<[^>]*>?/gm, '');
+      paper.summary = paper.paper.summary.replace(/<[^>]*>?/gm, "");
       paper.id = paper.paper.id;
     });
 
@@ -37,28 +32,38 @@ export class PapersService {
 
   private async parsePdf(buffer: Buffer) {
     try {
-      const data = await pdf(buffer);
+      const data = await pdf(buffer, { max: 1 });
 
       var text = data.text;
-      text = text.replace(/<[^>]*>/g, '');
-      text = text.replace(/&nbsp;/g, ' ');
-      text = text.replace(/[^\w\s]/g, ' ');
-      text = text.replace(/\s+/g, ' ');
-      text = text.replace(/\s{2,}/g, ' ');
+      console.log(text.length);
+      text = text.replace(/<[^>]*>/g, "");
+      text = text.replace(/&nbsp;/g, " ");
+      text = text.replace(/[^\w\s]/g, " ");
+      text = text.replace(/\s+/g, " ");
+      text = text.replace(/\s{2,}/g, " ");
 
-      return chunk(text, this.chunkingConfig);
+      const chunks = chunk(text, {
+        splitter: "paragraph",
+        minLength: 100,
+        maxLength: 200,
+        overlap: 0.1,
+        delimiters: "\n",
+      });
+
+      console.log(
+        ">>>>>>>>>>>>>>>>>>>> " + chunks.length + " >>>>>>>>>>>>>>>>>>>>"
+      );
+
+      return [text];
     } catch (err) {
       console.error(err);
-      throw new Error('Failed to parse PDF');
+      throw new Error("Failed to parse PDF");
     }
   }
 
-  async extractTextFromPdf(pdfUrl: string) {
+  async extractTextFromPdf(pdfUrl: string): Promise<string[]> {
     const text = await fetch(pdfUrl).then((res) => res.arrayBuffer());
-
-    const data = await this.parsePdf(Buffer.from(text));
-
-    return data;
+    return await this.parsePdf(Buffer.from(text));
   }
 }
 

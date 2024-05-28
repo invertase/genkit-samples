@@ -23,7 +23,7 @@ Clone the repo:
 git clone git@github.com:invertase/genkit-samples.git
 ```
 
-install dependencies:
+Install dependencies:
 
 ```bash
 cd genkit-samples/nextjs && npm i
