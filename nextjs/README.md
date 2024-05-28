@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Firebase Genkit Sample with Next.js
 
-## Getting Started
+This sample demonstrates how to deploy a Firebase Genkit flow to an API route of a Next.js app. The project uses React and Tailwind CSS for a basic frontend.
 
-First, run the development server:
+## Trying out the sample
+
+### Prerequisites
+
+This sample uses Vertex AI's Gemini 1.5 Pro Preview model. To run the sample you will need a
+Google Cloud Platform project and the Vertex AI API enabled.
+
+Once you have enabled the Vertex AI API on your GCP project, create a service account in the IAM/Admin service, download the private key and set your application default credentials:
+
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS=path/to/your/json
+```
+
+### Running the sample locally
+
+Clone the repo:
+
+```bash
+git clone git@github.com:invertase/genkit-samples.git
+```
+
+install dependencies:
+
+```bash
+cd genkit-samples/nextjs && npm i
+```
+
+Run locally:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 with your browser to see the result!
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Genkit Flows: Menu Suggestion
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+This project includes a Genkit flow that generates menu suggestions for a restaurant based on a user-provided theme. The flow is defined as follows:
 
-## Learn More
+```javascript
+import { defineFlow, generate } from "genkit";
+import { z } from "zod";
 
-To learn more about Next.js, take a look at the following resources:
+export const menuSuggestionFlow = defineFlow(
+  {
+    name: "menuSuggestionFlow",
+    inputSchema: z.string(),
+    outputSchema: z.string(),
+  },
+  async (subject) => {
+    const prompt = `Suggest an item for the menu of a ${subject} themed restaurant`;
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+    const llmResponse = await generate({
+      model: geminiPro,
+      prompt: prompt,
+      config: {
+        temperature: 1,
+      },
+    });
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+    return llmResponse.text();
+  }
+);
+```
 
-## Deploy on Vercel
+If you have Genkit installed globally you may use `genkit start` to instead open the Genkit UI and experiment with the flow yourself.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+This project is licensed under the Apache 2.0 License.
