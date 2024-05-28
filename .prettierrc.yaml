@@ -15,6 +15,6 @@
 trailingComma: es5
 arrowParens: always
 overrides:
-  - files: '*.{yml,yaml}'
+  - files: "*.{yml,yaml}"
     options:
       proseWrap: always

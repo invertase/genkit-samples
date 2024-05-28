@@ -23,7 +23,7 @@ function delay(ms: number): Promise<void> {
 }
 
 export async function simpleGenerateWithRetry<
-  O extends z.ZodTypeAny = z.ZodTypeAny
+  O extends z.ZodTypeAny = z.ZodTypeAny,
 >(options: GenerateWithRetryOptions<O>): Promise<GenerateResponse<z.infer<O>>> {
   let lastError: Error | undefined;
 
