@@ -13,7 +13,7 @@ You can use the seed script to seed a PostgreSQL database with a sample dataset.
 docker compose up
 ```
 
-You may require to use `sudo` to run the above command. After running the above command, you can access the PGAdmin instance at `http://localhost:5050`. Use the following credentials to log in:
+You may need to use `sudo` to run the above command. After running the above command, you can access the PGAdmin instance at `http://localhost:5050`. Use the following credentials to log in:
 
 - Email: `user@example.com`
 - Password: `password`
@@ -155,7 +155,7 @@ Result:
 }
 ```
 
-### Dataset Credits
+### Dataset Acknowledgment/Credits
 
 The dataset used in this project is the `TripAdvisor European Restaurants` dataset from Kaggle. The dataset used in this sample contains the first 10000 rows from the original dataset. You can find the original dataset [here](https://www.kaggle.com/datasets/stefanoleone992/tripadvisor-european-restaurants?resource=download).
 
