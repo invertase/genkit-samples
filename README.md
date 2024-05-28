@@ -30,8 +30,6 @@ We welcome contributions! If you have a sample project or improvement to share, 
 
 ## License
 
-## License
-
 This repository is licensed under the Apache License, Version 2.0. See the [LICENSE](LICENSE) file for more details.
 
 ## Support
