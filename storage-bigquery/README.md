@@ -68,7 +68,7 @@ const datasetTableSchema = z.object({
 const outputSchema = z.string();
 ```
 
-### totalFlow
+### mainFlow
 
 This flow combines imageDescriptionFlow and writeToBigQueryFlow to create a flow that describes an image and stores the description in a BigQuery table.
 
@@ -134,4 +134,4 @@ This command will start the Genkit server and make the defined flows available f
 
 You can now interact with the flows using the Genkit interface or by making API requests to the endpoints provided by Genkit.
 
-For instance, you can trigger the totalFlow to process an image and store its description in BigQuery.
+For instance, you can trigger the mainFlow to process an image and store its description in BigQuery.

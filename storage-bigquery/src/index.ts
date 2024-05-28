@@ -20,9 +20,9 @@ export { imageDescriptionFlow };
 export { writeToBigQueryFlow, createDatasetAndTableFlow };
 export { writeToFirestoreFlow };
 
-export const totalFlow = defineFlow(
+export const mainFlow = defineFlow(
   {
-    name: "totalFlow",
+    name: "mainFlow",
     inputSchema: z.object({
       bucketName: z.string(),
       filePath: z.string(),
