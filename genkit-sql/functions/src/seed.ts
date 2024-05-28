@@ -84,7 +84,8 @@ import { parse } from "csv-parse";
 
       for (let i = 0; i < r.length; i++) {
         // Parse all number values
-        if (typeof r[i] === "string" && !isNaN(parseFloat(r[i] as string))) {
+        const numberRegex = /^-?\d+(\.\d+)?$/;
+        if (typeof r[i] === "string" && numberRegex.test(r[i] as string)) {
           r[i] = parseFloat(r[i] as string);
         }
         // Parse boolean values
