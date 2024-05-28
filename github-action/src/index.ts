@@ -32,6 +32,10 @@ if (!process.env.ISSUE_BODY) {
   throw new Error("issueBody is not set");
 }
 
+if (!process.env.ISSUE_TITLE) {
+  throw new Error("issueTitle is not set");
+}
+
 const credentials = JSON.parse(
   Buffer.from(process.env.GCP_SERVICE_ACCOUNT_KEY, "base64").toString("utf-8")
 );
@@ -56,6 +60,7 @@ export { tsFlow };
 console.log(Object.keys(content));
 
 runFlow(tsFlow, {
+  issueTitle: process.env.ISSUE_TITLE,
   issueBody: process.env.ISSUE_BODY,
   content: JSON.stringify(content),
 })

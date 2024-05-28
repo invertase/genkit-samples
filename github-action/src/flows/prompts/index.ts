@@ -1,10 +1,23 @@
-export const getPrompt = (source: string, issueText: string) => {
+export const getPrompt = ({
+  content,
+  issueBody,
+  issueTitle,
+}: {
+  content: string;
+  issueBody: string;
+  issueTitle: string;
+}) => {
   return `
     <source-material>
-    ${source}
+    ${content}
     </source-material>
     <github-issue>
-    ${issueText}
+    <github-issue-title>
+    ${issueTitle}
+    </github-issue-title>
+    <github-issue-body>
+    ${issueBody}
+    </github-issue-body>
     </github-issue>
     <instruction>
     Your job is to reply to the provided github-issue.

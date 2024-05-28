@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
 // import { generate } from "@genkit-ai/ai";
@@ -7,21 +7,24 @@ import { noAuth, onFlow } from "@genkit-ai/firebase/functions";
 import * as z from "zod";
 import { generate } from "@genkit-ai/ai";
 import { getPrompt } from "./prompts";
-import { gemini15ProPreview } from '@genkit-ai/vertexai';
-
+import { gemini15ProPreview } from "@genkit-ai/vertexai";
 
 export const tsFlow = onFlow(
   {
     name: "tsFlow",
-    inputSchema: z.object({issueBody: z.string(), content: z.string()}),
+    inputSchema: z.object({
+      issueTitle: z.string(),
+      issueBody: z.string(),
+      content: z.string(),
+    }),
     outputSchema: z.string(),
     authPolicy: noAuth(),
   },
-  async ({issueBody, content}) => {
-
+  async ({ issueTitle, issueBody, content }) => {
+    const prompt = getPrompt({ content, issueBody, issueTitle });
     const llmResponse = await generate({
       model: gemini15ProPreview,
-      prompt: getPrompt(content, issueBody),
+      prompt,
     });
     return llmResponse.text();
   }
