@@ -10,7 +10,7 @@ const content = getFilesContent(contentRepoRoot, ".ts", [
   /.github/,
 ]);
 
-import { tsFlow } from "./flows";
+import { codeFlow } from "./flows";
 import { runFlow } from "@genkit-ai/flow";
 import { configureGenkit } from "@genkit-ai/core";
 import { PluginOptions, vertexAI } from "@genkit-ai/vertexai";
@@ -55,9 +55,9 @@ configureGenkit({
   enableTracingAndMetrics: true,
 });
 
-export { tsFlow };
+export { codeFlow };
 
-runFlow(tsFlow, {
+runFlow(codeFlow, {
   issueTitle: process.env.ISSUE_TITLE,
   issueBody: process.env.ISSUE_BODY,
   content: JSON.stringify(content),

@@ -9,9 +9,9 @@ import { generate } from "@genkit-ai/ai";
 import { getPrompt } from "./prompts";
 import { gemini15ProPreview } from "@genkit-ai/vertexai";
 
-export const tsFlow = onFlow(
+export const codeFlow = onFlow(
   {
-    name: "tsFlow",
+    name: "codeFlow",
     inputSchema: z.object({
       issueTitle: z.string(),
       issueBody: z.string(),
