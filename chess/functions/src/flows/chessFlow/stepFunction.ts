@@ -22,7 +22,10 @@ type StepFunctionInput = z.infer<typeof inputSchema>;
 type StepFunctionOutput = z.infer<typeof outputSchema>;
 
 class ChessGameError extends Error {
-  constructor(message: string, public statusCode: number) {
+  constructor(
+    message: string,
+    public statusCode: number
+  ) {
     super(message);
     this.name = "ChessGameError";
   }
