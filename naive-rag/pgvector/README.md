@@ -47,8 +47,7 @@ Google Cloud Service Account:
 
 1. Create a Google Cloud Service Account with the following permissions:
 
-   - Storage Object Viewer
-   - BigQuery Data Editor
+   - Vertex AI User 
 
 2. Download the service account JSON key file.
 
