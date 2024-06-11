@@ -6,6 +6,6 @@ CREATE TABLE IF NOT EXISTS films (
   id SERIAL PRIMARY KEY,
   name TEXT,
   description TEXT,
-  embedding VECTOR,
+  embedding VECTOR(768),
   created_at TIMESTAMPTZ DEFAULT now()
 );
