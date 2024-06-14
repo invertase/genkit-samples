@@ -3,6 +3,7 @@ import * as admin from "firebase-admin";
 import { WhereFilterOp } from "@google-cloud/firestore";
 import { z } from "zod";
 
+// Define a schema for the operators
 const operatorSchema = z.enum([
   "<",
   "<=",
@@ -16,57 +17,64 @@ const operatorSchema = z.enum([
   "array-contains-any",
 ]);
 
+// Define a schema for prefilters
 export const prefilterSchema = z.object({
   field: z.string(),
   operator: operatorSchema,
   value: z.string(),
 });
 
-export const parseLimit = (limit: unknown) => {
+// Parse limit function with improved error handling
+export const parseLimit = (limit: unknown): number => {
   if (typeof limit !== "string" && typeof limit !== "number") {
-    throw new Error("limit must be a string or a number");
+    throw new Error("The limit must be a string or a number");
   }
 
   const parsedFloat = parseFloat(limit as string);
   const isInteger = Number.isInteger(parsedFloat);
 
   if (!isInteger || parsedFloat < 1) {
-    throw new Error("limit must be an integer greater than 0");
+    throw new Error("The limit must be an integer greater than 0");
   }
 
-  const parsedInt = parseInt(limit as string);
-  return parsedInt;
+  return parseInt(limit as string, 10);
 };
 
+// Define a schema for the query
 const querySchema = z
   .object({
     query: z.string(),
     limit: z.union([z.string(), z.number()]).optional(),
     prefilters: z.array(prefilterSchema).optional(),
   })
-  .refine((data) => data.query != undefined, {
-    message: "Query field must be provided",
+  .refine((data) => data.query !== undefined, {
+    message: "The query field must be provided",
   });
 
-export interface parsedRequest {
+// Interface for parsed requests
+export interface ParsedRequest {
   query: string; // This must always be provided, aligning with your Zod schema
   limit?: string | number;
   prefilters?: Prefilter[];
 }
 
-export const parseQuerySchema = (data: unknown): parsedRequest => {
+// Parse the query schema
+export const parseQuerySchema = (data: unknown): ParsedRequest => {
   return querySchema.parse(data);
 };
 
+// Interface for prefilters
 export interface Prefilter {
   field: string;
   operator: WhereFilterOp;
   value: any;
 }
 
+// Firestore vector store client class
 export class FirestoreVectorStoreClient {
   firestore: admin.firestore.Firestore;
   distanceMeasure: "COSINE" | "EUCLIDEAN" | "DOT_PRODUCT";
+
   constructor(
     firestore: admin.firestore.Firestore,
     distanceMeasure: "COSINE" | "EUCLIDEAN" | "DOT_PRODUCT" = "COSINE"
@@ -74,10 +82,11 @@ export class FirestoreVectorStoreClient {
     this.firestore = firestore;
     this.distanceMeasure = distanceMeasure;
   }
+
   async query(
     query: number[],
     collection: string,
-    prefilters: Prefilter[],
+    prefilters: Prefilter[] = [],
     limit: number,
     outputField: string
   ): Promise<
@@ -90,19 +99,31 @@ export class FirestoreVectorStoreClient {
 
     let q: Query | VectorQuery = col;
 
+    // Apply prefilters if provided
     if (prefilters.length > 0) {
       for (const p of prefilters) {
         q = q.where(p.field, p.operator, p.value);
       }
     }
 
+    // Apply vector search
     q = q.findNearest(outputField, query, {
       limit,
       distanceMeasure: this.distanceMeasure,
     });
 
-    const result = await q.get();
-
-    return result;
+    // Execute the query and return the result
+    try {
+      const result = await q.get();
+      return result;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to execute query: ${error.message}`);
+      } else {
+        throw new Error(
+          `Failed to execute query ${JSON.stringify(error, null, 2)}`
+        );
+      }
+    }
   }
 }

@@ -1,17 +1,27 @@
+// set environment variables
 import { config } from "dotenv";
 config();
+import * as z from "zod";
+import * as admin from "firebase-admin";
+// needed for vector datatype
+import { FieldValue } from "@google-cloud/firestore";
+// genkit imports
 import { configureGenkit } from "@genkit-ai/core";
 import { textEmbeddingGecko } from "@genkit-ai/vertexai";
-import * as z from "zod";
 import { firebase } from "@genkit-ai/firebase";
 import { vertexAI } from "@genkit-ai/vertexai";
+import { defineFlow } from "@genkit-ai/flow";
+import { embed, embedMany } from "@genkit-ai/ai/embedder";
 import {
   defineIndexer,
   defineRetriever,
+  Document,
   index,
   retrieve,
 } from "@genkit-ai/ai/retriever";
-import { Document } from "@genkit-ai/ai/retriever";
+// local imports
+import { FirestoreVectorStoreClient } from "./queryClient";
+import { fakeData } from "./fakeData";
 
 configureGenkit({
   plugins: [
@@ -23,13 +33,6 @@ configureGenkit({
   logLevel: "debug",
   enableTracingAndMetrics: true,
 });
-
-import * as admin from "firebase-admin";
-import { FieldValue } from "@google-cloud/firestore";
-import { embed, embedMany } from "@genkit-ai/ai/embedder";
-import { defineFlow } from "@genkit-ai/flow";
-import { fakeData } from "./fakeData";
-import { FirestoreVectorStoreClient } from "./queryClient";
 
 // Initialize Firebase Admin SDK
 admin.initializeApp({
@@ -43,8 +46,6 @@ export const filmIndexer = defineIndexer(
     configSchema: z.null().optional(),
   },
   async (docs: Document[]) => {
-    // Function to embed content and return the SQL-ready embedding
-
     const results = await embedMany({
       embedder: textEmbeddingGecko,
       content: docs.map((doc) => doc.content[0].text!),
@@ -72,15 +73,14 @@ export const filmIndexer = defineIndexer(
   }
 );
 
-// Define the retriever function specifically for films
+// Retriever for films
 export const filmRetriever = defineRetriever(
   {
     name: `films`,
     configSchema: z.object({ k: z.number() }),
   },
   async (document, options) => {
-    // Check and extract the content to be embedded
-    const contentToEmbed = document.content[0].text as string;
+    const contentToEmbed = document.content[0].text;
 
     if (typeof contentToEmbed !== "string") {
       throw new Error(`Content for description is not a string`);
@@ -93,9 +93,7 @@ export const filmRetriever = defineRetriever(
     });
 
     const k = options?.k || 10;
-
     const queryClient = new FirestoreVectorStoreClient(admin.firestore());
-
     const results = await queryClient.query(
       embedding,
       "films",
@@ -105,21 +103,17 @@ export const filmRetriever = defineRetriever(
     );
 
     if (!results) {
-      return {
-        documents: [],
-      };
+      return { documents: [] };
     }
 
-    const documents = results.docs.map((result: any) =>
+    const documents = results.docs.map((result) =>
       Document.fromText(result.data().name, {
         name: result.data().name,
         description: result.data().description,
       }).toJSON()
     );
 
-    return {
-      documents,
-    };
+    return { documents };
   }
 );
 
@@ -140,15 +134,13 @@ export const filmRetrieverFlow = defineFlow(
   }
 );
 
+// Flow for indexing films
 export const filmIndexerFlow = defineFlow(
   {
     name: "filmIndexerFlow",
   },
   async () => {
     const documents = fakeData;
-
-    const indexer = filmIndexer;
-
-    await index({ indexer, documents });
+    await index({ indexer: filmIndexer, documents });
   }
 );
