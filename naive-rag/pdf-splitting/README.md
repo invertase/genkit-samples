@@ -10,14 +10,18 @@ This flow extracts text from a PDF file.
 
 #### Input Schema:
 
+The input is a path to a file on your local machine.
+
 ```typescript
-const inputSchema = z.string();
+const inputSchema = z.object({ filePath: z.string() });
 ```
 
 #### Output Schema:
 
+The output will be the extracted PDF text.
+
 ```typescript
-const outputSchema = z.string();
+const outputSchema = z.object({ text: z.string() });
 ```
 
 ### chunkTextFlow

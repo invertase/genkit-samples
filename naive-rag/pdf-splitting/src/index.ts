@@ -30,18 +30,17 @@ export default configureGenkit({
 export const extractTextFlow = defineFlow(
   {
     name: "extractTextFlow",
-    inputSchema: z.string(),
-    outputSchema: z.string(),
+    inputSchema: z.object({ filePath: z.string() }),
+    outputSchema: z.object({ text: z.string() }),
   },
-  async (filePath) => {
+  async ({ filePath }) => {
     const examplePath = path.join(__dirname, "../dinosaurs.pdf");
     if (!filePath) {
       filePath = examplePath;
     }
 
     const text = await extractTextFromPDF(filePath);
-
-    return text;
+    return { text };
   }
 );
 
@@ -130,7 +129,7 @@ export const totalFlow = defineFlow(
     outputSchema: z.string(),
   },
   async ({ filePath, chunkLength = 200, overlapLength = 0 }) => {
-    const text = await runFlow(extractTextFlow, filePath);
+    const { text } = await runFlow(extractTextFlow, { filePath });
     const chunks = await runFlow(chunkTextFlow, {
       text,
       chunkLength,
