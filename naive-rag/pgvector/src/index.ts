@@ -1,4 +1,4 @@
-import { embed } from "@genkit-ai/ai/embedder";
+import { embed, embedMany } from "@genkit-ai/ai/embedder";
 import {
   defineIndexer,
   defineRetriever,
@@ -32,26 +32,27 @@ export const filmIndexer = defineIndexer(
   async (docs: Document[]) => {
     const sql = postgres(postgresClientOptions);
 
-    // Function to embed content and return the SQL-ready embedding
-    const getSqlEmbedding = async (doc: Document) => {
+    for (const doc of docs) {
       if (doc.content.length === 0 || !doc.content[0].text) {
         throw new Error(`Document ${doc.metadata?.name} has no content`);
       }
+
       if (!doc.metadata || !doc.metadata.name) {
         throw new Error(
           `Document has no metadata, or no name provided in metadata`
         );
       }
+    }
 
-      const embedding = await embed({
-        embedder: textEmbeddingGecko,
-        content: doc.content[0].text!,
-      });
-      return { doc, sqlEmbedding: toSql(embedding) };
-    };
+    const embeddings = await embedMany({
+      embedder: textEmbeddingGecko,
+      content: docs.map((doc) => doc.content[0].text!),
+    });
 
-    // Process all documents to get their embeddings
-    const sqlEmbeddings = await Promise.all(docs.map(getSqlEmbedding));
+    const sqlEmbeddings = embeddings.map((result, i) => ({
+      doc: docs[i],
+      sqlEmbedding: toSql(result.embedding),
+    }));
 
     // Prepare the values for insertion
     const values = sqlEmbeddings.map(({ doc, sqlEmbedding }) => [
