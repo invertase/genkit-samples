@@ -10,7 +10,9 @@ import { pineconeIndexerRef } from "genkitx-pinecone";
 import { pinecone } from "genkitx-pinecone";
 import { fakeData } from "./fakeData";
 
-if (!process.env.PINECONE_API_KEY) {
+const apiKey = process.env.PINECONE_API_KEY;
+
+if (!apiKey) {
   throw new Error("PINECONE_API_KEY is required");
 }
 
@@ -22,7 +24,7 @@ export default configureGenkit({
         indexId: "films",
         embedder: textEmbeddingGecko,
         clientParams: {
-          apiKey: process.env.PINECONE_API_KEY,
+          apiKey,
         },
       },
     ]),
