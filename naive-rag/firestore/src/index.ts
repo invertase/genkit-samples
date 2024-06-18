@@ -23,10 +23,12 @@ import {
 import { FirestoreVectorStoreClient } from "./queryClient";
 import { fakeData } from "./fakeData";
 
+const projectId = process.env.PROJECT_ID;
+
 configureGenkit({
   plugins: [
     firebase({
-      projectId: process.env.PROJECT_ID,
+      projectId,
     }),
     vertexAI({ location: "us-central1", projectId: process.env.PROJECT_ID }),
   ],
