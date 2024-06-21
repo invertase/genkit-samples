@@ -1,0 +1,33 @@
+{
+  "name": "genkit-storage-bigquery-integration",
+  "version": "0.0.1",
+  "description": "A project integrating Firebase Genkit with Firebase Storage and Google Cloud BigQuery for image description and data storage.",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node lib/index.js",
+    "build": "tsc",
+    "build:watch": "tsc --watch"
+  },
+  "keywords": [],
+  "author": "cabljac",
+  "license": "ISC",
+  "dependencies": {
+    "@genkit-ai/ai": "^0.5.1",
+    "@genkit-ai/core": "^0.5.1",
+    "@genkit-ai/dotprompt": "^0.5.1",
+    "@genkit-ai/firebase": "^0.5.1",
+    "@genkit-ai/flow": "^0.5.1",
+    "@genkit-ai/vertexai": "^0.5.1",
+    "@google-cloud/bigquery": "^7.7.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "pdf-parse": "^1.1.1",
+    "zod": "^3.23.8",
+    "zoq": "^0.0.7"
+  },
+  "devDependencies": {
+    "@types/pdf-parse": "^1.1.4",
+    "typescript": "^5.4.5"
+  }
+}
